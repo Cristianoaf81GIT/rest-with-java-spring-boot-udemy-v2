@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: rest-with-java-spring-boot-udemy
+  config:
+    import: env.properties
