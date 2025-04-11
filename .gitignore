@@ -35,3 +35,6 @@ build/
 ### ENV ###
 ./src/main/resources/env.properties
 env.properties
+
+### nvim.rest files ###
+http/*.http
