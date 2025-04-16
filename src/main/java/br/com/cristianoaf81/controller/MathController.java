@@ -1,5 +1,6 @@
 package br.com.cristianoaf81.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,10 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cristianoaf81.exception.DivisionByZeroException;
 import br.com.cristianoaf81.exception.UnsupportedMathOperationException;
+import br.com.cristianoaf81.services.math.SimpleMath;
+
+import static br.com.cristianoaf81.request.converters.NumberConverter.*;
 
 @RestController
 @RequestMapping("/math")
 public class MathController {
+
+  @Autowired
+  private SimpleMath mathService;
 
   @GetMapping("/sum/{numberOne}/{numberTwo}") // ou @RequestMapping
   public Double sum(
@@ -22,7 +29,7 @@ public class MathController {
       throw new UnsupportedMathOperationException("Please set a numeric value");
     }    
 
-    return convertToDouble(numberOne) + convertToDouble(numberTwo);
+    return mathService.sum(convertToDouble(numberOne),convertToDouble(numberTwo));
   }
 
   @GetMapping("/subtraction/{numberOne}/{numberTwo}")
@@ -35,7 +42,7 @@ public class MathController {
       throw new UnsupportedMathOperationException("Please set a numeric value");
     }
     
-    return convertToDouble(numberOne) - convertToDouble(numberTwo);
+    return mathService.subtract(convertToDouble(numberOne), convertToDouble(numberTwo));
 
   }
 
@@ -49,7 +56,7 @@ public class MathController {
       throw new UnsupportedMathOperationException("Please set a numeric value");
     }    
 
-    return convertToDouble(numberOne) * convertToDouble(numberTwo);
+    return mathService.multiply(convertToDouble(numberOne), convertToDouble(numberTwo));
   }
 
 
@@ -70,7 +77,7 @@ public class MathController {
       throw new DivisionByZeroException("Cannot divide by zero");
     }
 
-    return n1 / n2;
+    return mathService.divide(n1, n2);
   }
 
   @GetMapping("/mean/{numberOne}/{numberTwo}")
@@ -82,7 +89,7 @@ public class MathController {
     if (!isNumeric(numberOne) || !isNumeric(numberTwo)) {
       throw new UnsupportedMathOperationException("Please set a numeric value");
     }    
-    return (convertToDouble(numberOne) + convertToDouble(numberTwo)) / 2;
+    return mathService.mean(convertToDouble(numberOne),convertToDouble(numberTwo));
   }
 
   @GetMapping("/squareroot/{number}")
@@ -98,28 +105,7 @@ public class MathController {
       throw new UnsupportedMathOperationException("Cannot get square root of negative number");
     }
 
-    return Math.sqrt(convertToDouble(number));
+    return mathService.squareRoot(convertToDouble(number));
   }
 
-
-  private boolean isNumeric(String n) {
-    try {
-      if (n == null || n.isEmpty()) {
-        return false;
-      }
-      String number = n.replace(",",".");
-      return number.matches("[-+]?[0-9]*\\.?[0-9]"); 
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
-  private Double convertToDouble(String n) throws UnsupportedMathOperationException {
-    if (n == null || n.isEmpty()) {
-      throw new UnsupportedMathOperationException("Please set a numeric value");
-    }
-
-    String number = n.replace(",",".");
-    return Double.parseDouble(number);    
-  }
 }
