@@ -13,8 +13,6 @@ public class PersonService {
   private AtomicLong counter = new AtomicLong();
 
   private Logger logger = Logger.getLogger(PersonService.class.getName());
-
-
   
   public Person findById(String id) {
     logger.info("Finding one person!");
@@ -22,7 +20,7 @@ public class PersonService {
     person.setId(counter.incrementAndGet());
     person.setFirstName("Leandro");
     person.setLastName("Costa");
-    person.setAddress("Uberlândia MG, Brasil");
+    person.setAddress("Uberlândia - Minas Gerais, Brasil");
     person.setGender("male");
     return person;
   }  
