@@ -37,6 +37,7 @@ public class PersonService {
   } 
 
   public List<Person> findAll() {
+    logger.info("Finding all people");
     return persons;
   }
 
@@ -49,6 +50,20 @@ public class PersonService {
     String gender = i % 2 == 0 ? "MALE" : "FEMALE";
     person.setGender(gender);
     return person;
+  }
+
+  public Person create(Person person) {
+    logger.info("Creating one person");
+    return person;
+  }
+
+  public Person update(Person person) {
+    logger.info("Updating one person");
+    return person;
+  }
+
+  public void delete(String id) {
+    logger.info(String.format("Deleting person with id %s", id));
   }
 
 }
