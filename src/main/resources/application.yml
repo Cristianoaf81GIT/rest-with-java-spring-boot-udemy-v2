@@ -1,5 +1,18 @@
 spring:
   application:
-    name: rest-with-java-spring-boot-udemy
+    name: rest-with-java-spring-boot-udemy-v2
+  
   config:
-    import: env.properties
+    import: ./env.properties
+  
+  datasource:
+    driver-class-name: ${DRIVER_CLASS_NAME} 
+    url: ${URL_CONN}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_OPTS}    
+      show-sql: false
+      open-in-view: true
