@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.cristianoaf81.exception.ExceptionResponse;
+import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.exception.UnsupportedMathOperationException;
 import br.com.cristianoaf81.exception.DivisionByZeroException;
 
@@ -43,6 +44,15 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     String details = request.getDescription(false);
     ExceptionResponse response = new ExceptionResponse(timestamp, message, details);
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public final ResponseEntity<ExceptionResponse> handleNotFoundExceptions(Exception ex, WebRequest request) {
+    Date timestamp = new Date();
+    String message = ex.getMessage();
+    String details = request.getDescription(false);
+    ExceptionResponse response = new ExceptionResponse(timestamp, message, details);
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
   }
 
 }
