@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
@@ -80,7 +81,7 @@ public class PersonService {
     return repository.save(existingPerson);
   }
 
-  public void delete(Long id) {
+  public ResponseEntity<?> delete(Long id) {
     logger.info(String.format("Deleting person with id %s", id));
     String errMsg = String.format("No record found for this person id: [%s]", id);
     Person existingPerson = repository
@@ -89,6 +90,8 @@ public class PersonService {
 
     if (existingPerson != null)
       repository.delete(existingPerson);
+
+    return ResponseEntity.noContent().build();
   }
 
 }

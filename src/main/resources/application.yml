@@ -15,4 +15,4 @@ spring:
     hibernate:
       ddl-auto: ${DDL_OPTS}    
       show-sql: false
-      open-in-view: true
+      open-in-view: false
