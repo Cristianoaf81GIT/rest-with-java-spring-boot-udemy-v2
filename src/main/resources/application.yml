@@ -17,10 +17,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${DDL_OPTS}    
-      show-sql: false
-      open-in-view: false
+      show-sql: ${HIBERNATE_SHOW_SQL}
+    
+    # nao e filho de hibernate
+    open-in-view: ${OPEN_IN_VIEW_OPTS}
 
-  logging:
-    level:
-      ${PACKAGE_01}: ${LOGGING_PACKAGE}
-        #root: ${LOGGING_ROOT}
+# nao e filho de spring
+#logging:
+#  level:
+    #${PACKAGE_01}: ${LOGGING_PACKAGE}
+    #root: DEBUG
