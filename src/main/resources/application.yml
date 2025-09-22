@@ -10,9 +10,17 @@ spring:
     url: ${URL_CONN}
     username: ${USERNAME}
     password: ${PASSWORD}
+    hikari:
+      maximum-pool-size: 30
+      connection-timeout: 50000
   
   jpa:
     hibernate:
       ddl-auto: ${DDL_OPTS}    
       show-sql: false
       open-in-view: false
+
+  logging:
+    level:
+      ${PACKAGE_01}: ${LOGGING_PACKAGE}
+        #root: ${LOGGING_ROOT}
