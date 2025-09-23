@@ -23,7 +23,7 @@ spring:
     open-in-view: ${OPEN_IN_VIEW_OPTS}
 
 # nao e filho de spring
-#logging:
-#  level:
-    #${PACKAGE_01}: ${LOGGING_PACKAGE}
+logging:
+  level:
+    ${PACKAGE_01}: ${LOGGING_PACKAGE}
     #root: DEBUG
