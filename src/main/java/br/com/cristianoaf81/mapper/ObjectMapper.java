@@ -17,9 +17,11 @@ public class ObjectMapper {
   }
 
   public static <O, D> List<D> parseListObjects(List<O> origin, Class<D> destination) {
-    Function <O, D>mapToDestination = originObj -> { 
+    
+    Function <O, D> mapToDestination = originObj -> { 
       return mapper.map(originObj, destination);
-    }; 
+    };
+
     return origin.stream().map(mapToDestination).collect(Collectors.toList());
   }
 }
