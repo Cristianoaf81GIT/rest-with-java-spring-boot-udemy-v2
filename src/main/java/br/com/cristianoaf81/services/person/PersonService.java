@@ -10,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
+import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
+import static br.com.cristianoaf81.mapper.ObjectMapper.parseListObjects;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
+import br.com.cristianoaf81.dto.PersonDTO;
 
 @Service
 public class PersonService {
@@ -23,26 +26,27 @@ public class PersonService {
   @Autowired
   private PersonRepository repository;
 
-  List<Person> persons = new ArrayList<Person>();  
+  List<PersonDTO> persons = new ArrayList<PersonDTO>();  
 
   public PersonService() {
     for (int i = 0; i < 8; i++) {
       Person p = mockPerson(i);
-      persons.add(p);
+      PersonDTO dto = parseObject(p, PersonDTO.class);
+      persons.add(dto);
     }
   }
 
-  public Person findById(Long id) {
+  public PersonDTO findById(Long id) {
     logger.info("Finding one person!");
     String errMsg = String.format("No record found for this id: [%s]", id);
-    return repository
+    return parseObject(repository
       .findById(id)
-      .orElseThrow(() -> new ResourceNotFoundException(errMsg));
+      .orElseThrow(() -> new ResourceNotFoundException(errMsg)), PersonDTO.class);
   } 
 
-  public List<Person> findAll() {
+  public List<PersonDTO> findAll() {
     logger.info("Finding all people");
-    return repository.findAll();
+    return parseListObjects(repository.findAll(),PersonDTO.class);
   }
 
   private Person mockPerson(int i) {
@@ -56,12 +60,13 @@ public class PersonService {
     return person;
   }
 
-  public Person create(Person person) {
+  public PersonDTO create(PersonDTO person) {
     logger.info("Creating one person");
-    return repository.save(person);
+    Person p = parseObject(person, Person.class);
+    return parseObject(repository.save(p), PersonDTO.class);
   }
 
-  public Person update(Person person) {
+  public PersonDTO update(PersonDTO person) {
     logger.info("Updating one person");
     String errMsg = String.format("No record found for this person id: [%s]", person.getId());
     
@@ -78,7 +83,7 @@ public class PersonService {
     if (person.getFirstName() != null && person.getLastName().length() > 0)
       existingPerson.setFirstName(person.getFirstName());
     
-    return repository.save(existingPerson);
+    return parseObject(repository.save(existingPerson), PersonDTO.class);
   }
 
   public ResponseEntity<?> delete(Long id) {

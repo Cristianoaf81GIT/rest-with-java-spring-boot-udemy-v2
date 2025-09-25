@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import br.com.cristianoaf81.model.Person;
+import br.com.cristianoaf81.dto.PersonDTO;
 import br.com.cristianoaf81.services.person.PersonService;
 
 @RestController
@@ -28,25 +28,25 @@ public class PersonController {
    
   // @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Person findById(@PathVariable(name = "id") Long id) {
+  public PersonDTO findById(@PathVariable(name = "id") Long id) {
     return personService.findById(id);
   }
   
   // @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Person> findAll() {
+  public List<PersonDTO> findAll() {
     return personService.findAll();
   }
 
   // @RequestMapping(method =  RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Person create(@RequestBody Person person) {
+  public PersonDTO create(@RequestBody PersonDTO person) {
     return personService.create(person);
   }
 
   // @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Person update(@RequestBody Person person) {
+  public PersonDTO update(@RequestBody PersonDTO person) {
     return personService.update(person);
   }
 
