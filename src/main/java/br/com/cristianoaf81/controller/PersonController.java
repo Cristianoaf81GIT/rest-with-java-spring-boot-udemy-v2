@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import br.com.cristianoaf81.dto.PersonDTO;
+import br.com.cristianoaf81.dto.v1.PersonDTO;
+import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 import br.com.cristianoaf81.services.person.PersonService;
 
 @RestController
@@ -42,6 +43,15 @@ public class PersonController {
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public PersonDTO create(@RequestBody PersonDTO person) {
     return personService.create(person);
+  }
+
+  @PostMapping(
+    value = "/v2",
+    produces = MediaType.APPLICATION_JSON_VALUE, 
+    consumes = MediaType.APPLICATION_JSON_VALUE
+  )
+  public PersonDTOV2 createV2(@RequestBody PersonDTOV2 person) {
+    return personService.createV2(person);
   }
 
   // @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -1,4 +1,4 @@
-package br.com.cristianoaf81.dto;
+package br.com.cristianoaf81.dto.v1;
 
 import java.io.Serializable;
 import java.util.Objects;

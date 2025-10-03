@@ -10,11 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
+import br.com.cristianoaf81.mapper.custom.PersonMapper;
+
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseListObjects;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
-import br.com.cristianoaf81.dto.PersonDTO;
+import br.com.cristianoaf81.dto.v1.PersonDTO;
+import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 
 @Service
 public class PersonService {
@@ -25,6 +28,9 @@ public class PersonService {
 
   @Autowired
   private PersonRepository repository;
+
+  @Autowired
+  private PersonMapper converter;
 
   List<PersonDTO> persons = new ArrayList<PersonDTO>();  
 
@@ -65,6 +71,15 @@ public class PersonService {
     Person p = parseObject(person, Person.class);
     return parseObject(repository.save(p), PersonDTO.class);
   }
+
+
+  public PersonDTOV2 createV2(PersonDTOV2 person) {
+    logger.info("Creating one personV2" + person);
+    Person p = converter.convertDTOtoEntity(person);
+    logger.info("[person] " + p);
+    return converter.convertEntityToDTO(repository.save(p));
+  }
+
 
   public PersonDTO update(PersonDTO person) {
     logger.info("Updating one person");
