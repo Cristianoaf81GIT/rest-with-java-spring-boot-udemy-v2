@@ -1,6 +1,7 @@
 package br.com.cristianoaf81.controller;
 
 import java.util.List;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +31,13 @@ public class PersonController {
   // @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public PersonDTO findById(@PathVariable(name = "id") Long id) {
-    return personService.findById(id);
+    var person = personService.findById(id);
+    person.setBirthDay(new Date());
+    // person.setPhoneNumber("+55 34 99723-1429");
+    person.setLastName(null);
+    person.setPhoneNumber("");
+    person.setSensitiveData("foo bar");
+    return person;
   }
   
   // @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
