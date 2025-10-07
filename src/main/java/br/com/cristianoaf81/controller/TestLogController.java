@@ -2,12 +2,14 @@ package br.com.cristianoaf81.controller;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
+@RequestMapping("/api/test/v1")
 public class TestLogController {
   
   private Logger logger = LoggerFactory.getLogger(TestLogController.class.getName());

@@ -21,7 +21,7 @@ import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 import br.com.cristianoaf81.services.person.PersonService;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/api/person/v1")
 public class PersonController {
 
   @Autowired

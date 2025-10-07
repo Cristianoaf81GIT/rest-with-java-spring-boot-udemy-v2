@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.cristianoaf81.model.Greeting;
 
 @RestController
+@RequestMapping("/api/greeting/v1")
 public class GreetingController {
 
 

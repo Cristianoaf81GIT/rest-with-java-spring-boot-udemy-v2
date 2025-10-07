@@ -38,3 +38,6 @@ env.properties
 
 ### nvim.rest files ###
 http/*.http
+
+### scripts shell
+./setenv.sh

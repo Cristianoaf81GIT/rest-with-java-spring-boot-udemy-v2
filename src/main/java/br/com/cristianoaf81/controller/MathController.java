@@ -13,7 +13,7 @@ import br.com.cristianoaf81.services.math.SimpleMath;
 import static br.com.cristianoaf81.request.converters.NumberConverter.*;
 
 @RestController
-@RequestMapping("/math")
+@RequestMapping("/api/math/v1")
 public class MathController {
 
   @Autowired
