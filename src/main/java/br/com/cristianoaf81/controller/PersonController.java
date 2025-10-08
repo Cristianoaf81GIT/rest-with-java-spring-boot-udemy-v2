@@ -28,26 +28,26 @@ public class PersonController {
   private PersonService personService;
    
   // @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )
   public PersonDTO findById(@PathVariable(name = "id") Long id) {
     return personService.findById(id);
   }
   
   // @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
   public List<PersonDTO> findAll() {
     return personService.findAll();
   }
 
   // @RequestMapping(method =  RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } , consumes = MediaType.APPLICATION_JSON_VALUE)
   public PersonDTO create(@RequestBody PersonDTO person) {
     return personService.create(person);
   }
 
   @PostMapping(
     value = "/v2",
-    produces = MediaType.APPLICATION_JSON_VALUE, 
+    produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, 
     consumes = MediaType.APPLICATION_JSON_VALUE
   )
   public PersonDTOV2 createV2(@RequestBody PersonDTOV2 person) {
@@ -55,7 +55,7 @@ public class PersonController {
   }
 
   // @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-  @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, consumes = MediaType.APPLICATION_JSON_VALUE)
   public PersonDTO update(@RequestBody PersonDTO person) {
     return personService.update(person);
   }
