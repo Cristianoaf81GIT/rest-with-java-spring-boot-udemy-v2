@@ -58,7 +58,7 @@ public class PersonController {
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
     }, 
-    consumes = MediaType.APPLICATION_JSON_VALUE
+    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_YAML_VALUE}
   )
   public PersonDTO create(@RequestBody PersonDTO person) {
     return personService.create(person);
@@ -71,7 +71,7 @@ public class PersonController {
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE
     }, 
-    consumes = MediaType.APPLICATION_JSON_VALUE
+    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_YAML_VALUE}
   )
   public PersonDTOV2 createV2(@RequestBody PersonDTOV2 person) {
     return personService.createV2(person);

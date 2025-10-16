@@ -1,9 +1,14 @@
 package br.com.cristianoaf81.config;
 
+// import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.MediaType;
+//import org.springframework.http.converter.HttpMessageConverter;
+
+import br.com.cristianoaf81.serialization.converter.YamlJackson2HttpMessageConverter;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -28,8 +33,25 @@ public class WebConfig implements WebMvcConfigurer {
       .defaultContentType(MediaType.APPLICATION_JSON)
       .mediaType("json", MediaType.APPLICATION_JSON)
       .mediaType("xml",MediaType.APPLICATION_XML)
-      .mediaType("yaml", MediaType.APPLICATION_YAML);
+      .mediaType("yaml", YamlJackson2HttpMessageConverter.MEDIA_TYPE)
+      .mediaType("yml", YamlJackson2HttpMessageConverter.ALT_MEDIA_TYPE);
 
-    WebMvcConfigurer.super.configureContentNegotiation(configurer);
+   // WebMvcConfigurer.super.configureContentNegotiation(configurer);
   }
+
+// YAML not need to load on spring 3 
+// Need to add at pom.xml 
+/*
+ *     <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+    </dependency>
+
+ * */
+//  @Override
+//  public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+//    converters.add(0, new YamlJackson2HttpMessageConverter()); // adiciona suporte para yaml
+//    converters.forEach(c -> System.out.println("Converter registrado: " + c.getClass().getName()));
+//    // WebMvcConfigurer.super.extendMessageConverters(converters);
+//  }
 }
