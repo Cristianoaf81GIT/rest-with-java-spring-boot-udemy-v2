@@ -45,6 +45,11 @@ public class PersonController {
       MediaType.APPLICATION_JSON_VALUE, 
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
+    },
+    consumes = {
+      MediaType.APPLICATION_JSON_VALUE, 
+      MediaType.APPLICATION_XML_VALUE, 
+      MediaType.APPLICATION_YAML_VALUE 
     }
   )
   public List<PersonDTO> findAll() {
@@ -58,7 +63,11 @@ public class PersonController {
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
     }, 
-    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_YAML_VALUE}
+    consumes = {
+      MediaType.APPLICATION_JSON_VALUE, 
+      MediaType.APPLICATION_YAML_VALUE,
+      MediaType.APPLICATION_XML_VALUE
+    }
   )
   public PersonDTO create(@RequestBody PersonDTO person) {
     return personService.create(person);
@@ -84,7 +93,11 @@ public class PersonController {
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE
     }, 
-    consumes = MediaType.APPLICATION_JSON_VALUE
+    consumes = {
+      MediaType.APPLICATION_JSON_VALUE, 
+      MediaType.APPLICATION_XML_VALUE, 
+      MediaType.APPLICATION_YAML_VALUE
+    }
   )
   public PersonDTO update(@RequestBody PersonDTO person) {
     return personService.update(person);

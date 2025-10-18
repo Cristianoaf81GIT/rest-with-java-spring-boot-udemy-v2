@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.MediaType;
-//import org.springframework.http.converter.HttpMessageConverter;
+// import org.springframework.http.converter.HttpMessageConverter;
 
 import br.com.cristianoaf81.serialization.converter.YamlJackson2HttpMessageConverter;
 
