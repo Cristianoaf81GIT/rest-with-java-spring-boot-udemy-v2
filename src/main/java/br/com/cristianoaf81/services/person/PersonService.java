@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.mapper.custom.PersonMapper;
@@ -16,6 +18,7 @@ import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseListObjects;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
+import br.com.cristianoaf81.controller.PersonController;
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 
@@ -45,9 +48,14 @@ public class PersonService {
   public PersonDTO findById(Long id) {
     logger.info("Finding one person!");
     String errMsg = String.format("No record found for this id: [%s]", id);
-    return parseObject(repository
+    var dto = parseObject(repository
       .findById(id)
       .orElseThrow(() -> new ResourceNotFoundException(errMsg)), PersonDTO.class);
+    dto.add(
+      linkTo(
+        methodOn(PersonController.class).findById(id)
+      ).withSelfRel().withType("GET"));
+    return dto;
   } 
 
   public List<PersonDTO> findAll() {

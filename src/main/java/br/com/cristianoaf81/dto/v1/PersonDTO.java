@@ -3,7 +3,9 @@ package br.com.cristianoaf81.dto.v1;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PersonDTO implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class PersonDTO extends RepresentationModel<PersonDTO> implements Serializable {
   
   private static final long serialVersionUID = 7965371053387682674L;
  
