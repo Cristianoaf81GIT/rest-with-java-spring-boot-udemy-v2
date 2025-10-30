@@ -55,13 +55,16 @@ public class PersonService {
       linkTo(
         methodOn(PersonController.class).findById(id)
       ).withSelfRel().withType("GET"));
-    addHateosLinks(id, dto);
+    dto.setId(id);
+    addHateosLinks(dto);
     return dto;
   } 
 
   public List<PersonDTO> findAll() {
     logger.info("Finding all people");
-    return parseListObjects(repository.findAll(),PersonDTO.class);
+    List<PersonDTO> dtos = parseListObjects(repository.findAll(),PersonDTO.class);
+    dtos.forEach(this::addHateosLinks);
+    return dtos;
   }
 
   private Person mockPerson(int i) {
@@ -78,7 +81,9 @@ public class PersonService {
   public PersonDTO create(PersonDTO person) {
     logger.info("Creating one person");
     Person p = parseObject(person, Person.class);
-    return parseObject(repository.save(p), PersonDTO.class);
+    PersonDTO dto = parseObject(repository.save(p), PersonDTO.class);
+    addHateosLinks(dto);
+    return dto;
   }
 
 
@@ -107,7 +112,9 @@ public class PersonService {
     if (person.getFirstName() != null && person.getLastName().length() > 0)
       existingPerson.setFirstName(person.getFirstName());
     
-    return parseObject(repository.save(existingPerson), PersonDTO.class);
+    PersonDTO dto = parseObject(repository.save(existingPerson), PersonDTO.class);
+    addHateosLinks(dto);
+    return dto;
   }
 
   public ResponseEntity<?> delete(Long id) {
@@ -123,10 +130,10 @@ public class PersonService {
     return ResponseEntity.noContent().build();
   }
   
-  public void addHateosLinks(Long id, PersonDTO dto) {
+  public void addHateosLinks(PersonDTO dto) {
     dto.add(
       linkTo(
-        methodOn(PersonController.class).findById(id)
+        methodOn(PersonController.class).findById(dto.getId())
       ).withSelfRel().withType("GET"));
 
     dto.add(
@@ -136,7 +143,7 @@ public class PersonService {
 
     dto.add(
       linkTo(
-        methodOn(PersonController.class).delete(id)
+        methodOn(PersonController.class).delete(dto.getId())
       ).withRel("delete").withType("DELETE"));
 
   
