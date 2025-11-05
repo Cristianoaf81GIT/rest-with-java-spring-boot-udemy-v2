@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.mapper.custom.PersonMapper;
 
@@ -79,6 +80,7 @@ public class PersonService {
   }
 
   public PersonDTO create(PersonDTO person) {
+    if (person == null) throw new RequiredObjectIsNullException();
     logger.info("Creating one person");
     Person p = parseObject(person, Person.class);
     PersonDTO dto = parseObject(repository.save(p), PersonDTO.class);
@@ -88,6 +90,7 @@ public class PersonService {
 
 
   public PersonDTOV2 createV2(PersonDTOV2 person) {
+    if (person == null) throw new RequiredObjectIsNullException();
     logger.info("Creating one personV2" + person);
     Person p = converter.convertDTOtoEntity(person);
     logger.info("[person] " + p);
@@ -96,6 +99,7 @@ public class PersonService {
 
 
   public PersonDTO update(PersonDTO person) {
+    if (person == null) throw new RequiredObjectIsNullException();
     logger.info("Updating one person");
     String errMsg = String.format("No record found for this person id: [%s]", person.getId());
     

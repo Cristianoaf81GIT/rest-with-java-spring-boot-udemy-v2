@@ -11,16 +11,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.util.Optional;
 
 import br.com.cristianoaf81.dto.v1.PersonDTO;
+import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
 import br.com.cristianoaf81.services.person.PersonService;
@@ -188,6 +191,17 @@ class PersonServicesTest {
   }
 
   @Test
+  void testCreateWithNullPerson() {
+    Exception exception = assertThrows(RequiredObjectIsNullException.class, 
+      () -> {
+        service.create(null);
+      });
+    String expectedMessage = "It is not allowed to persist a null object!";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
   void update() {
 
     Person person = input.mockEntity(1);
@@ -262,6 +276,17 @@ class PersonServicesTest {
   }
 
   @Test
+  void testUpdateWithNullPerson() {
+    Exception exception = assertThrows(RequiredObjectIsNullException.class, 
+      () -> {
+        service.update(null);
+      });
+    String expectedMessage = "It is not allowed to persist a null object!";
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @Test
   void delete() {
     Person person = input.mockEntity(1);
     person.setId(1L);
@@ -269,7 +294,8 @@ class PersonServicesTest {
     service.delete(1L);
     verify(repository, times(1)).findById(anyLong());
     verify(repository, times(1)).delete(any(Person.class));
-    //verifyNoInteractions(repository);
+    verifyNoMoreInteractions(repository);
+    
   }
 
   @Test
