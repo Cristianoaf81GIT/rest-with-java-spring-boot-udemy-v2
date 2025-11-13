@@ -45,12 +45,12 @@ public class PersonController {
       MediaType.APPLICATION_JSON_VALUE, 
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
-    },
-    consumes = {
+    }//,
+   /* consumes = {  ****IMPORTANT GET METHOD DOES NOT CONSUMES MEDIA TYPE COMMENT IT*********
       MediaType.APPLICATION_JSON_VALUE, 
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
-    }
+    }*/
   )
   public List<PersonDTO> findAll() {
     return personService.findAll();
