@@ -1,0 +1,22 @@
+2025-11-25 16:20:19.055574-03:00 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS `person` ( \000a  `id` BIGINT AUTO_INCREMENT NOT NULL,\000a  `first_name` VARCHAR(80) NOT NULL,\000a  `last_name` VARCHAR(80) NOT NULL,\000a  `address` VARCHAR(200) NOT NULL,\000a  `gender` VARCHAR(6) NOT NULL,\000a   PRIMARY KEY (`id`)\000a)\000aENGINE [*]= InnoDB"; expected "identifier"; SQL statement:
+CREATE TABLE IF NOT EXISTS `person` ( 
+  `id` BIGINT AUTO_INCREMENT NOT NULL,
+  `first_name` VARCHAR(80) NOT NULL,
+  `last_name` VARCHAR(80) NOT NULL,
+  `address` VARCHAR(200) NOT NULL,
+  `gender` VARCHAR(6) NOT NULL,
+   PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB [42001-240]
+2025-11-25 16:27:54.349475-03:00 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS `person` ( \000a  `id` BIGINT AUTO_INCREMENT NOT NULL,\000a  `first_name` VARCHAR(80) NOT NULL,\000a  `last_name` VARCHAR(80) NOT NULL,\000a  `address` VARCHAR(200) NOT NULL,\000a  `gender` VARCHAR(6) NOT NULL,\000a   PRIMARY KEY (`id`)\000a)\000aENGINE [*]= InnoDB"; expected "identifier"; SQL statement:
+CREATE TABLE IF NOT EXISTS `person` ( 
+  `id` BIGINT AUTO_INCREMENT NOT NULL,
+  `first_name` VARCHAR(80) NOT NULL,
+  `last_name` VARCHAR(80) NOT NULL,
+  `address` VARCHAR(200) NOT NULL,
+  `gender` VARCHAR(6) NOT NULL,
+   PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB [42001-240]
