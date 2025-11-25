@@ -41,3 +41,7 @@ http/*.http
 
 ### scripts shell
 ./setenv.sh
+
+### DBGATE
+src/main/resources/db/migration/dbgate-latest.exe
+./src/main/resources/db/migration/dbgate-latest.exe
