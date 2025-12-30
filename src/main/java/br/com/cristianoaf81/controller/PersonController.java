@@ -3,6 +3,7 @@ package br.com.cristianoaf81.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 import br.com.cristianoaf81.services.person.PersonService;
 
+//@CrossOrigin(origins = {"http://localhost:8080"})
 @RestController
 @RequestMapping("/api/person/v1")
 public class PersonController implements PersonApiDocInterface {
@@ -28,6 +30,7 @@ public class PersonController implements PersonApiDocInterface {
   private PersonService personService;
    
   // @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  // @CrossOrigin(origins = {"http://localhost:8080"})  // permite o controle granular de cors na aplicação
   @GetMapping(
     value = "/{id}", 
     produces = { 
@@ -60,6 +63,7 @@ public class PersonController implements PersonApiDocInterface {
   }
 
   // @RequestMapping(method =  RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  // @CrossOrigin(origins = {"http://localhost:8080"}) // libera apenas um metodo especifico do controller, pode ser usado também no controler inteiro
   @PostMapping(
     produces = {
       MediaType.APPLICATION_JSON_VALUE, 

@@ -1,3 +1,7 @@
+# configuracao global de cors
+cors:
+  originPatterns: http://localhost:8080,https://www.google.com.br,http://localhost:3000,http://www.google.com.br
+
 spring:
   application:
     name: rest-with-java-spring-boot-udemy-v2

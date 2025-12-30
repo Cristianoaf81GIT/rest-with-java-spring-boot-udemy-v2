@@ -1,9 +1,12 @@
 package br.com.cristianoaf81.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 // import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.MediaType;
 // import org.springframework.http.converter.HttpMessageConverter;
@@ -12,6 +15,24 @@ import br.com.cristianoaf81.serialization.converter.YamlJackson2HttpMessageConve
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+  
+  // le os valores de cors de dentro do application properties
+  @Value("${cors.originPatterns}") 
+  private String corsOriginPatterns = "";
+
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    // recebe os valores separados por virgula e converte em um array de strings
+    var allowedOrigins = corsOriginPatterns.split(",");
+
+    // adiciona no registro de cors as origens seguindo o wildcard **, ou seja, todas as rotas da aplicacao
+    registry.addMapping("/**")
+      .allowedOrigins(allowedOrigins)
+      //.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+      .allowedMethods("*") // libera todos os metodos
+      .allowCredentials(true); // permite o uso de credenciais
+  }
 
   @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

@@ -1,6 +1,10 @@
 sever:
   port: 8888
 
+# ativa configs de cors globalmente
+cors:
+  originPatterns: http://localhost:8080,http://www.google.com.br,https://google.com.br,http://localhost:3000
+
 spring:
   application:
     name: rest-with-java-spring-boot-udemy-v2
