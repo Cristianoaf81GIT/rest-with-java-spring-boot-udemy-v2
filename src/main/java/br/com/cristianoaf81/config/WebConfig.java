@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     // recebe os valores separados por virgula e converte em um array de strings
     var allowedOrigins = corsOriginPatterns.split(",");
-
+    System.out.println(allowedOrigins);
     // adiciona no registro de cors as origens seguindo o wildcard **, ou seja, todas as rotas da aplicacao
     registry.addMapping("/**")
       .allowedOrigins(allowedOrigins)
