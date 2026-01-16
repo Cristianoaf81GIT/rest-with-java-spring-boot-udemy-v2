@@ -19,6 +19,7 @@ import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseListObjects;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
+import jakarta.transaction.Transactional;
 import br.com.cristianoaf81.controller.PersonController;
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.dto.v2.PersonDTOV2;
@@ -133,7 +134,23 @@ public class PersonService {
 
     return ResponseEntity.noContent().build();
   }
-  
+ 
+  @Transactional // necessario quando implementamos um metodo nao default jpq no repository 
+  public PersonDTO disablePerson(Long id) {
+    logger.info(String.format("Disabling person with id %s", id));
+    String errMsg = String.format("No record found for this person id: [%s]", id);
+    repository
+      .findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException(errMsg));
+
+    repository.disablePerson(id); // metodo nao default implementado no repository do jpa
+    var entity = repository.findById(id).get();
+    var dto = parseObject(entity, PersonDTO.class);
+    addHateosLinks(dto);
+    return dto;
+  }
+
+
   public void addHateosLinks(PersonDTO dto) {
     dto.add(
       linkTo(
@@ -160,5 +177,11 @@ public class PersonService {
       linkTo(
         methodOn(PersonController.class).update(dto)
       ).withRel("update").withType("PUT"));
+
+    dto.add(
+      linkTo(
+        methodOn(PersonController.class).disablePerson(dto)
+      ).withRel("disable").withType("PATCH")
+    );
   }
 }
