@@ -257,4 +257,47 @@ public interface PersonApiDocInterface {
   )
   public ResponseEntity<?> delete(Long id);
 
+  @Operation(
+    summary = "Disable a person",
+    description = "Disable a specific person by your id",
+    tags = {"People"},
+    responses = {
+      @ApiResponse(
+        description = "Success",
+        responseCode = "200",
+        content = @Content(
+          mediaType = MediaType.APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = PersonDTO.class)
+        )
+      ),
+
+      @ApiResponse(
+        description = "No Content",
+        responseCode = "204",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Unauthorized",
+        responseCode = "401",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Not found",
+        responseCode = "404",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Internal Server Error",
+        responseCode = "500",
+        content = @Content
+      ),
+    }
+  )
+
+  public PersonDTO disablePerson(Long id);
+
 }
+

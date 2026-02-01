@@ -9,7 +9,7 @@ import br.com.cristianoaf81.model.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
   
-  @Modifying 
+  @Modifying(clearAutomatically = true) // necessario para desativar cache de 2 nivel no hibernate 
   @Query("UPDATE Person p set p.enabled = false WHERE p.id = :id")
   void disablePerson(@Param("id") Long id);
 

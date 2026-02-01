@@ -180,7 +180,7 @@ public class PersonService {
 
     dto.add(
       linkTo(
-        methodOn(PersonController.class).disablePerson(dto)
+        methodOn(PersonController.class).disablePerson(dto.getId())
       ).withRel("disable").withType("PATCH")
     );
   }
