@@ -1,4 +1,4 @@
-package br.com.cristianoaf81.integrationtests.controllers.withjson;
+package br.com.cristianoaf81.integrationtests.controllers.cors.withjson;
 
 // import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.BeforeAll;
 )
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
-public class PersonControllerTest extends AbstractIntegrationTest {
+public class PersonControllerCorsTest extends AbstractIntegrationTest {
   
   private static RequestSpecification specification;
   private static ObjectMapper objectMapper;
@@ -89,6 +89,7 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     assertEquals("Stall",createdPerson.getLastName());
     assertEquals("New York City - EUA",createdPerson.getAddress());
     assertEquals("Male",createdPerson.getGender());
+    assertTrue(createdPerson.getEnabled());
  }
 
   @Test
@@ -149,7 +150,7 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     assertNotNull(createdPerson.getLastName());
     assertNotNull(createdPerson.getAddress());
     assertNotNull(createdPerson.getGender());
-
+    assertTrue(createdPerson.getEnabled());
 
     assertEquals("Richard",createdPerson.getFirstName());
     assertEquals("Stall",createdPerson.getLastName());
@@ -199,5 +200,6 @@ public class PersonControllerTest extends AbstractIntegrationTest {
     person.setLastName("Stall");
     person.setAddress("New York City - EUA");
     person.setGender("Male");
+    person.setEnabled(true);
   }
 }
