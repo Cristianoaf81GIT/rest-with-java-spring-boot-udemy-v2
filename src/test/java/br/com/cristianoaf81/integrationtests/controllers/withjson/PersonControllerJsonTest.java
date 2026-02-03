@@ -1,5 +1,7 @@
 package br.com.cristianoaf81.integrationtests.controllers.withjson;
 
+import java.util.List;
+
 // import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -10,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,7 +36,7 @@ import org.junit.jupiter.api.BeforeAll;
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
   properties = {
-    //"server.port=8888",
+    "server.port=8888",
     "cors.originPatterns: http://localhost:8080,https://www.google.com.br,http://localhost:3000,http://www.google.com.br"
   }
 )
@@ -215,6 +218,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
+  @Order(5)
   void delete() {
     given(specification)
     .pathParam("id", person.getId())
@@ -226,7 +230,55 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void findAll() {}
+  @Order(6)
+  void findAll() throws JsonProcessingException {
+    var content = given(specification)
+    .accept(MediaType.APPLICATION_JSON_VALUE)
+    .when()
+    .get()
+    .then()
+    .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
+    .extract()
+    .body()
+    .asString();
+
+    List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {});
+
+    PersonDTO personOne = people.get(0);
+    person = personOne;
+
+    assertNotNull(personOne.getId());
+    assertTrue(personOne.getId() > 0);
+    assertNotNull(personOne.getFirstName());
+    assertNotNull(personOne.getLastName());
+    assertNotNull(personOne.getAddress());
+    assertNotNull(personOne.getGender());
+    assertTrue(personOne.getEnabled());
+
+    assertEquals("Ayrton",personOne.getFirstName());
+    assertEquals("Senna",personOne.getLastName());
+    assertEquals("São Paulo, Brazil",personOne.getAddress());
+    assertEquals("Male",personOne.getGender());
+    assertTrue(personOne.getEnabled());
+
+    PersonDTO personFour = people.get(4);
+    person = personFour;
+
+    assertNotNull(personFour.getId());
+    assertTrue(personFour.getId() > 0);
+    assertNotNull(personFour.getFirstName());
+    assertNotNull(personFour.getLastName());
+    assertNotNull(personFour.getAddress());
+    assertNotNull(personFour.getGender());
+    assertTrue(personFour.getEnabled());
+
+    assertEquals("Muhamad",personFour.getFirstName());
+    assertEquals("Ali",personFour.getLastName());
+    assertEquals("Kentuck - US",personFour.getAddress());
+    assertEquals("Male",personFour.getGender());
+    assertTrue(personFour.getEnabled());
+  }
 
   private void mockPerson() {
     person.setFirstName("Linus");
