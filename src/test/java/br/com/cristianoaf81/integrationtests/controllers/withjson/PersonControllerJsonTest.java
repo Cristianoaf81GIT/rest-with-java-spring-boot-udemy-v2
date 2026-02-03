@@ -23,6 +23,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -71,6 +72,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     .post()
     .then()
     .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
     .extract()
     .body()
     .asString();
@@ -112,6 +114,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     .get("{id}")
     .then()
     .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
     .extract()
     .body()
     .asString();
@@ -153,6 +156,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     .put()
     .then()
     .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
     .extract()
     .body()
     .asString();
@@ -176,8 +180,50 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
 
   }
 
+
   @Test
-  void delete() {}
+  @Order(4)
+  void disable() throws JsonProcessingException {
+    var content = given(specification)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
+    .pathParam("id", person.getId())
+    .when()
+    .patch("{id}")
+    .then()
+    .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
+    .extract()
+    .body()
+    .asString();
+
+    PersonDTO createdPerson = objectMapper.readValue(content, PersonDTO.class);
+    person = createdPerson;
+
+    assertNotNull(createdPerson.getId());
+    assertTrue(createdPerson.getId() > 0);
+    assertNotNull(createdPerson.getFirstName());
+    assertNotNull(createdPerson.getLastName());
+    assertNotNull(createdPerson.getAddress());
+    assertNotNull(createdPerson.getGender());
+    assertFalse(createdPerson.getEnabled());
+    createdPerson.setLastName("Benedict Torvalds");
+    assertEquals("Linus",createdPerson.getFirstName());
+    assertEquals("Benedict Torvalds",createdPerson.getLastName());
+    assertEquals("Helsink - FINLAND",createdPerson.getAddress());
+    assertEquals("Male",createdPerson.getGender());
+    assertFalse(createdPerson.getEnabled());
+  }
+
+  @Test
+  void delete() {
+    given(specification)
+    .pathParam("id", person.getId())
+    .when()
+    .delete("{id}")
+    .then()
+    .statusCode(204);    
+
+  }
 
   @Test
   void findAll() {}
