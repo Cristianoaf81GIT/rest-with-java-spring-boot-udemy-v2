@@ -3,7 +3,12 @@ package br.com.cristianoaf81.unittests.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@JsonIgnoreProperties({"links"})
 public class PersonDTO implements Serializable {
   
  private static final long serialVersionUID = 1L;
