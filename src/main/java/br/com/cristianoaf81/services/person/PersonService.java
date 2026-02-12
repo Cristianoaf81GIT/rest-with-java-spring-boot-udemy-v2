@@ -10,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.mapper.custom.PersonMapper;
 
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
-import static br.com.cristianoaf81.mapper.ObjectMapper.parseListObjects;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -62,11 +63,15 @@ public class PersonService {
     return dto;
   } 
 
-  public List<PersonDTO> findAll() {
+  public Page<PersonDTO> findAll(Pageable pageable) {
     logger.info("Finding all people");
-    List<PersonDTO> dtos = parseListObjects(repository.findAll(),PersonDTO.class);
-    dtos.forEach(this::addHateosLinks);
-    return dtos;
+
+    var people = repository.findAll(pageable);
+    var peopleWithLinks = people.map(person -> {
+      var dto = parseObject(person, PersonDTO.class);
+      return dto;
+    });
+    return peopleWithLinks;
   }
 
   private Person mockPerson(int i) {
@@ -159,7 +164,7 @@ public class PersonService {
 
     dto.add(
       linkTo(
-        methodOn(PersonController.class).findAll()
+        methodOn(PersonController.class).findAll(1,12)
       ).withRel("findAll").withType("GET"));
 
     dto.add(

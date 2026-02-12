@@ -1,9 +1,9 @@
 package br.com.cristianoaf81.controller.docs;
 
-import java.util.List;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -116,7 +116,10 @@ public interface PersonApiDocInterface {
 
     }
   )
-  public List<PersonDTO> findAll();
+  public ResponseEntity<Page<PersonDTO>> findAll(
+    @RequestParam(name = "page", defaultValue = "0") Integer page,
+    @RequestParam(name = "size", defaultValue = "12") Integer size
+  );
 
     @Operation(
     summary = "Adds a new Person",
