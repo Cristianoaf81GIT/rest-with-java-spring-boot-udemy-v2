@@ -1,5 +1,7 @@
 package br.com.cristianoaf81.controller;
 
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,9 +65,11 @@ public class PersonController implements PersonApiDocInterface {
   @Override
   public ResponseEntity<Page<PersonDTO>> findAll(
     @RequestParam(name = "page", defaultValue = "0") Integer page,
-    @RequestParam(name = "size", defaultValue = "12") Integer size
+    @RequestParam(name = "size", defaultValue = "12") Integer size,
+    @RequestParam(name = "direction", defaultValue = "asc") String direction
   ) {
-    Pageable pageable = PageRequest.of(page, size);
+    Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
     return ResponseEntity.ok(personService.findAll(pageable));
   }
 

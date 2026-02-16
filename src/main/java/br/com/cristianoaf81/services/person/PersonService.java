@@ -12,6 +12,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+//import org.springframework.data.web.PagedResourcesAssembler;
+//import org.springframework.hateoas.PagedModel;
 
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
@@ -37,6 +39,7 @@ public class PersonService {
 
   @Autowired
   private PersonMapper converter;
+
 
   List<PersonDTO> persons = new ArrayList<PersonDTO>();  
 
@@ -69,6 +72,7 @@ public class PersonService {
     var people = repository.findAll(pageable);
     var peopleWithLinks = people.map(person -> {
       var dto = parseObject(person, PersonDTO.class);
+      addHateosLinks(dto);
       return dto;
     });
     return peopleWithLinks;
@@ -164,7 +168,7 @@ public class PersonService {
 
     dto.add(
       linkTo(
-        methodOn(PersonController.class).findAll(1,12)
+        methodOn(PersonController.class).findAll(1,12, "asc")
       ).withRel("findAll").withType("GET"));
 
     dto.add(

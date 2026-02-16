@@ -118,7 +118,8 @@ public interface PersonApiDocInterface {
   )
   public ResponseEntity<Page<PersonDTO>> findAll(
     @RequestParam(name = "page", defaultValue = "0") Integer page,
-    @RequestParam(name = "size", defaultValue = "12") Integer size
+    @RequestParam(name = "size", defaultValue = "12") Integer size,
+    @RequestParam(name = "direction", defaultValue = "asc") String direction
   );
 
     @Operation(
