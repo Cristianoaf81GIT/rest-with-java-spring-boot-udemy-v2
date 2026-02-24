@@ -4,6 +4,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -116,7 +118,7 @@ public interface PersonApiDocInterface {
 
     }
   )
-  public ResponseEntity<Page<PersonDTO>> findAll(
+  public ResponseEntity<PagedModel<EntityModel<PersonDTO>>> findAll(
     @RequestParam(name = "page", defaultValue = "0") Integer page,
     @RequestParam(name = "size", defaultValue = "12") Integer size,
     @RequestParam(name = "direction", defaultValue = "asc") String direction

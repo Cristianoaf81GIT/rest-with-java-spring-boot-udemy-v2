@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 //import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,6 +12,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 //@JsonIgnoreProperties({"links"})
+@Relation(collectionRelation = "people")
 public class PersonDTO extends RepresentationModel<PersonDTO> implements Serializable {
   
   private static final long serialVersionUID = 7965371053387682674L;

@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 import br.com.cristianoaf81.controller.docs.PersonApiDocInterface;
 import br.com.cristianoaf81.dto.v1.PersonDTO;
@@ -62,8 +64,9 @@ public class PersonController implements PersonApiDocInterface {
       MediaType.APPLICATION_YAML_VALUE 
     }*/
   )
+  
   @Override
-  public ResponseEntity<Page<PersonDTO>> findAll(
+  public ResponseEntity<PagedModel<EntityModel<PersonDTO>>> findAll(
     @RequestParam(name = "page", defaultValue = "0") Integer page,
     @RequestParam(name = "size", defaultValue = "12") Integer size,
     @RequestParam(name = "direction", defaultValue = "asc") String direction

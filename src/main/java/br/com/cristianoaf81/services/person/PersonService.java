@@ -10,8 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.Link;
 //import org.springframework.data.web.PagedResourcesAssembler;
 //import org.springframework.hateoas.PagedModel;
 
@@ -40,6 +45,8 @@ public class PersonService {
   @Autowired
   private PersonMapper converter;
 
+  @Autowired
+  private PagedResourcesAssembler<PersonDTO> assembler;
 
   List<PersonDTO> persons = new ArrayList<PersonDTO>();  
 
@@ -65,8 +72,8 @@ public class PersonService {
     addHateosLinks(dto);
     return dto;
   } 
-
-  public Page<PersonDTO> findAll(Pageable pageable) {
+ // aqui
+  public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
     logger.info("Finding all people");
 
     var people = repository.findAll(pageable);
@@ -75,7 +82,12 @@ public class PersonService {
       addHateosLinks(dto);
       return dto;
     });
-    return peopleWithLinks;
+
+    Link findAllLink = WebMvcLinkBuilder
+    .linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
+      .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
+
+    return assembler.toModel(peopleWithLinks, findAllLink);
   }
 
   private Person mockPerson(int i) {
