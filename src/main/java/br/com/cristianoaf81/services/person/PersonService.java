@@ -72,7 +72,7 @@ public class PersonService {
     addHateosLinks(dto);
     return dto;
   } 
- // aqui
+ 
   public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
     logger.info("Finding all people");
 
