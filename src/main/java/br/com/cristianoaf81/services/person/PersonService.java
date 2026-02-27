@@ -78,7 +78,7 @@ public class PersonService {
 
     var people = repository.findAll(pageable);
     var peopleWithLinks = people.map(person -> {
-      var dto = parseObject(person, PersonDTO.class);
+    var dto = parseObject(person, PersonDTO.class);
       addHateosLinks(dto);
       return dto;
     });

@@ -1,6 +1,6 @@
 package br.com.cristianoaf81.controller.docs;
 
-import java.util.List;
+//import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.MediaType;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 import br.com.cristianoaf81.dto.v1.BookDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -196,7 +199,11 @@ public interface BookControllerApiConfig {
       ),
     }
   )
-  public List<BookDTO> getAll();
+  public ResponseEntity<PagedModel<EntityModel<BookDTO>>> getAll(
+    @RequestParam(name = "page", defaultValue = "0") Integer page,
+    @RequestParam(name = "size", defaultValue = "12") Integer size,
+    @RequestParam(name = "direction", defaultValue = "asc") String direction
+  );
 
   @PutMapping (
     produces = {

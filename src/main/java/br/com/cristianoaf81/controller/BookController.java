@@ -1,12 +1,22 @@
 package br.com.cristianoaf81.controller;
 
-import java.util.List;
+//import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+//import org.springframework.hateoas.EntityModel;
+//import org.springframework.hateoas.PagedModel;
+
 
 import br.com.cristianoaf81.controller.docs.BookControllerApiConfig;
 import br.com.cristianoaf81.dto.v1.BookDTO;
@@ -41,7 +51,13 @@ public class BookController implements BookControllerApiConfig {
   }
 
   @Override
-  public List<BookDTO> getAll() {
-    return bookService.getAll();
+  public ResponseEntity<PagedModel<EntityModel<BookDTO>>> getAll(
+    @RequestParam(name = "page", defaultValue = "0") Integer page,
+    @RequestParam(name = "size", defaultValue = "12") Integer size,
+    @RequestParam(name = "direction", defaultValue = "asc") String direction
+  ) {
+    Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "title"));
+    return ResponseEntity.ok(bookService.getAll(pageable));
   }
 }

@@ -6,10 +6,12 @@ import java.util.Objects;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
+@Relation(collectionRelation = "books")
 public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
   
   private static final long serialVersionUID = -1921762000232113531L;
