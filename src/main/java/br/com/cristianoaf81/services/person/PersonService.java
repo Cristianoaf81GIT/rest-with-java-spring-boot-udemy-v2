@@ -89,6 +89,24 @@ public class PersonService {
 
     return assembler.toModel(peopleWithLinks, findAllLink);
   }
+  
+  @Transactional
+  public PagedModel<EntityModel<PersonDTO>> findByName(String firstName, Pageable pageable) {
+    logger.info("Finding by name");
+
+    var people = repository.findPeopleByName(firstName,pageable);
+    var peopleWithLinks = people.map(person -> {
+    var dto = parseObject(person, PersonDTO.class);
+      addHateosLinks(dto);
+      return dto;
+    });
+
+    Link findAllLink = WebMvcLinkBuilder
+    .linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
+      .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
+
+    return assembler.toModel(peopleWithLinks, findAllLink);
+  }
 
   private Person mockPerson(int i) {
     Person person = new Person();
@@ -170,7 +188,6 @@ public class PersonService {
     addHateosLinks(dto);
     return dto;
   }
-
 
   public void addHateosLinks(PersonDTO dto) {
     dto.add(

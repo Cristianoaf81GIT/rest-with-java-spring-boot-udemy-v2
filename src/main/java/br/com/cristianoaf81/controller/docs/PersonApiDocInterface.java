@@ -2,8 +2,8 @@ package br.com.cristianoaf81.controller.docs;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 
@@ -305,5 +305,69 @@ public interface PersonApiDocInterface {
 
   public PersonDTO disablePerson(Long id);
 
+
+  @Operation(
+    summary = "Find people by first name",
+    description = "Find people by their first names",
+    tags = {"People"},
+    responses = {
+      @ApiResponse(
+        description = "Success",
+        responseCode = "200",
+        content = {
+          @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))
+          ),
+          @Content(
+            mediaType = MediaType.APPLICATION_XML_VALUE,
+            array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))
+          ),
+          @Content(
+            mediaType = MediaType.APPLICATION_YAML_VALUE,
+            array = @ArraySchema(schema = @Schema(implementation = PersonDTO.class))
+          )
+        }
+      ),
+
+      @ApiResponse(
+        description = "No Content",
+        responseCode = "204",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Bad Request",
+        responseCode = "400",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Unauthorized",
+        responseCode = "401",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Not found",
+        responseCode = "404",
+        content = @Content
+      ),
+
+      @ApiResponse(
+        description = "Internal Server Error",
+        responseCode = "500",
+        content = @Content
+      ),
+
+
+    }
+  )
+  public ResponseEntity<PagedModel<EntityModel<PersonDTO>>> findByName(
+    @PathVariable(name = "firstName") String firstName,
+    @RequestParam(name = "page", defaultValue = "0") Integer page,
+    @RequestParam(name = "size", defaultValue = "12") Integer size,
+    @RequestParam(name = "direction", defaultValue = "asc") String direction
+  );
 }
 
