@@ -2,7 +2,6 @@ package br.com.cristianoaf81.integrationtests.controllers.withjson;
 
 import java.util.List;
 
-// import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,13 +11,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.cristianoaf81.config.TestConfigs;
-import br.com.cristianoaf81.dto.v1.PersonDTO;
+import br.com.cristianoaf81.unittests.dto.PersonDTO;
+//import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.integrationtests.testcontainers.AbstractIntegrationTest;
+import br.com.cristianoaf81.unittests.dto.wrapper.WrapperPersonDTO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -243,7 +244,8 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     .body()
     .asString();
 
-    List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {});
+    WrapperPersonDTO wrapper = objectMapper.readValue(content, WrapperPersonDTO.class);
+    List<PersonDTO> people = wrapper.getEmbedded().getPeople();
 
     PersonDTO personOne = people.get(0);
     person = personOne;
@@ -262,7 +264,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     assertEquals("Male",personOne.getGender());
     assertTrue(personOne.getEnabled());
 
-    PersonDTO personFour = people.get(4);
+    var personFour = people.get(4);
     person = personFour;
 
     assertNotNull(personFour.getId());
