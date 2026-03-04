@@ -1,7 +1,14 @@
 package br.com.cristianoaf81.integrationtests.controllers.withjson;
 
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -11,27 +18,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.cristianoaf81.config.TestConfigs;
-import br.com.cristianoaf81.unittests.dto.PersonDTO;
-//import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.integrationtests.testcontainers.AbstractIntegrationTest;
-import br.com.cristianoaf81.unittests.dto.wrapper.WrapperPersonDTO;
+import br.com.cristianoaf81.unittests.dto.PersonDTO;
+import br.com.cristianoaf81.unittests.dto.wrapper.json.WrapperPersonDTO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.BeforeAll;
 
 
 @SpringBootTest(
@@ -235,6 +233,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   void findAll() throws JsonProcessingException {
     var content = given(specification)
     .accept(MediaType.APPLICATION_JSON_VALUE)
+    .queryParams("page", 3, "size", 12, "direction", "asc")
     .when()
     .get()
     .then()
@@ -258,9 +257,9 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     assertNotNull(personOne.getGender());
     assertTrue(personOne.getEnabled());
 
-    assertEquals("Ayrton",personOne.getFirstName());
-    assertEquals("Senna",personOne.getLastName());
-    assertEquals("São Paulo, Brazil",personOne.getAddress());
+    assertEquals("Anderson",personOne.getFirstName());
+    assertEquals("Blowen",personOne.getLastName());
+    assertEquals("Room 973",personOne.getAddress());
     assertEquals("Male",personOne.getGender());
     assertTrue(personOne.getEnabled());
 
@@ -275,10 +274,18 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     assertNotNull(personFour.getGender());
     assertTrue(personFour.getEnabled());
 
-    assertEquals("Muhamad",personFour.getFirstName());
-    assertEquals("Ali",personFour.getLastName());
-    assertEquals("Kentuck - US",personFour.getAddress());
-    assertEquals("Male",personFour.getGender());
+    /*
+     *"firstName": "Anette",
+                "lastName": "Gentery",
+                "address": "Room 1192",
+                "gender": "Female",
+                "enabled": true,
+     * */
+
+    assertEquals("Anette",personFour.getFirstName());
+    assertEquals("Gentery",personFour.getLastName());
+    assertEquals("Room 1192",personFour.getAddress());
+    assertEquals("Female",personFour.getGender());
     assertTrue(personFour.getEnabled());
   }
 

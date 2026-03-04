@@ -1,4 +1,4 @@
-package br.com.cristianoaf81.unittests.dto.wrapper;
+package br.com.cristianoaf81.unittests.dto.wrapper.json;
 
 import java.io.Serializable;
 import java.util.List;
