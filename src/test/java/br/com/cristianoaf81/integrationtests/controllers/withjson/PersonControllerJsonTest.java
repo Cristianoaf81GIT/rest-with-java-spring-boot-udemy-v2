@@ -289,6 +289,77 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
     assertTrue(personFour.getEnabled());
   }
 
+
+  @Test
+  @Order(7)
+  void findByNameTest() throws JsonProcessingException {
+    var content = given(specification)
+    .accept(MediaType.APPLICATION_JSON_VALUE)
+    .pathParam("firstName", "and")
+    .queryParams("page", 0, "size", 12, "direction", "asc")
+    .when()
+    .get("findPeopleByName/{firstName}")
+    .then()
+    .statusCode(200)
+    .contentType(MediaType.APPLICATION_JSON_VALUE)
+    .extract()
+    .body()
+    .asString();
+
+    WrapperPersonDTO wrapper = objectMapper.readValue(content, WrapperPersonDTO.class);
+    List<PersonDTO> people = wrapper.getEmbedded().getPeople();
+
+    PersonDTO personOne = people.get(0);
+    person = personOne;
+
+    assertNotNull(personOne.getId());
+    assertTrue(personOne.getId() > 0);
+    assertNotNull(personOne.getFirstName());
+    assertNotNull(personOne.getLastName());
+    assertNotNull(personOne.getAddress());
+    assertNotNull(personOne.getGender());
+    assertFalse(personOne.getEnabled());
+    /*
+     *"firstName": "'Ablejandrina",
+                "lastName": "Darben",
+                "address": "14th Floor",
+                "gender": "Female",
+                "enabled": false,
+
+     * */
+    assertEquals("Alejandrina",personOne.getFirstName());
+    assertEquals("Darben",personOne.getLastName());
+    assertEquals("14th Floor",personOne.getAddress());
+    assertEquals("Female",personOne.getGender());
+    assertFalse(personOne.getEnabled());
+
+    var personFour = people.get(4);
+    person = personFour;
+
+    assertNotNull(personFour.getId());
+    assertTrue(personFour.getId() > 0);
+    assertNotNull(personFour.getFirstName());
+    assertNotNull(personFour.getLastName());
+    assertNotNull(personFour.getAddress());
+    assertNotNull(personFour.getGender());
+    assertFalse(personFour.getEnabled());
+
+    /*
+     * "firstName": "Andra",
+                "lastName": "Woolnough",
+                "address": "Room 632",
+                "gender": "Female",
+                "enabled": false,
+
+     * */
+
+    assertEquals("Andra",personFour.getFirstName());
+    assertEquals("Woolnough",personFour.getLastName());
+    assertEquals("Room 632",personFour.getAddress());
+    assertEquals("Female",personFour.getGender());
+    assertFalse(personFour.getEnabled());
+  }
+
   private void mockPerson() {
     person.setFirstName("Linus");
     person.setLastName("Torvalds");
