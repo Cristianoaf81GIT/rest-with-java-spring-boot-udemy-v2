@@ -6,4 +6,5 @@ INSERT INTO `person` (`id`, `address`, `first_name`, `gender`, `last_name`) VALU
 INSERT INTO `person` (`id`, `address`, `first_name`, `gender`, `last_name`) VALUES ('9', 'Mvezo - South Africa', 'Nelson', 'Male', 'Nelson');
 INSERT INTO `person` (`id`, `address`, `first_name`, `gender`, `last_name`) VALUES ('10', 'Mvezo - South Africa', 'Nelson2', 'Male', 'Nelson2');
 INSERT INTO `person` (`id`, `address`, `first_name`, `gender`, `last_name`) VALUES ('11', 'Smiljan - Croatia', 'Nikola', 'Male', 'Tesla');
+INSERT INTO `person` (`id`, `address`, `first_name`, `gender`, `last_name`) VALUES ('12', 'Smiljan - Croatia', 'Nikola', 'Male', 'Tesla');
 
