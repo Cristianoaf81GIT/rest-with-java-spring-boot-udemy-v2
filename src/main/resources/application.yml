@@ -2,6 +2,9 @@
 cors:
   originPatterns: http://localhost:8080,https://www.google.com.br,http://localhost:3000,http://www.google.com.br
 
+file:
+  upload-dir: ../../../files/
+
 spring:
   application:
     name: rest-with-java-spring-boot-udemy-v2
@@ -25,6 +28,14 @@ spring:
     
     # nao e filho de hibernate
     open-in-view: ${OPEN_IN_VIEW_OPTS}
+  
+  # configuracoes de multpart para upload/download
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215 MB
 
 # nao e filho de spring
 logging:
