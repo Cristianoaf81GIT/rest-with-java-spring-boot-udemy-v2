@@ -1,5 +1,6 @@
 package br.com.cristianoaf81.exception.handler;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.exception.UnsupportedMathOperationException;
 import br.com.cristianoaf81.exception.DivisionByZeroException;
+import br.com.cristianoaf81.exception.FileStorageException;
 
 @RestController
 @ControllerAdvice
@@ -65,4 +67,21 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(FileNotFoundException.class)
+  public final ResponseEntity<CustomExceptionResponse> handleFileNotFoundException(Exception ex, WebRequest request) {
+    LocalDateTime timestamp = LocalDateTime.now();
+    String message = ex.getMessage();
+    String details = request.getDescription(false);
+    CustomExceptionResponse response = new CustomExceptionResponse(timestamp, message, details);
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(FileStorageException.class)
+  public final ResponseEntity<CustomExceptionResponse> handleFileStorageException(Exception ex, WebRequest request) {
+    LocalDateTime timestamp = LocalDateTime.now();
+    String message = ex.getMessage();
+    String details = request.getDescription(false);
+    CustomExceptionResponse response = new CustomExceptionResponse(timestamp, message, details);
+    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }
