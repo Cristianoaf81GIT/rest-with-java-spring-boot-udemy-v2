@@ -4,9 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ import br.com.cristianoaf81.exception.FileStorageException;
 @Service
 public class FileStorageService {
   
-  Logger logger = Logger.getLogger(FileStorageService.class.getName());
+  private Logger logger = LoggerFactory.getLogger(FileStorageService.class.getName());
 
   private final Path fileStorageLocation;
 
@@ -32,9 +30,10 @@ public class FileStorageService {
     logger.info("File path = " + path.toAbsolutePath().toString());
    
     try {
+      logger.info("Creating directory!");
       Files.createDirectories(this.fileStorageLocation);
     } catch(Exception e) {
-      logger.log(new LogRecord(Level.SEVERE, e.getMessage()));
+      logger.error("Error while trying to create upload dir: " + e.getMessage());
       throw new FileStorageException("Could not create the directory where files will be stored!", e);
     }
   }
@@ -46,8 +45,9 @@ public class FileStorageService {
   public String storeFile(MultipartFile file) {
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
     try {
-      
+      logger.info("Saving File!");
       if (fileName.contains("..")) {
+        logger.error("Invalid path sequence for store file!");
         throw new FileStorageException("Sorry! File Name Contains an Invalid Path Sequence: " + fileName);
       } 
 
@@ -55,7 +55,7 @@ public class FileStorageService {
       Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
       return fileName;
     } catch (Exception e) {
-      logger.log(new LogRecord(Level.SEVERE, e.getMessage()));
+      logger.error("Error while trying to store file: " + e.getMessage());
       throw new FileStorageException("Could not store file: " + fileName + " .Please try again!", e);
     }
   }
