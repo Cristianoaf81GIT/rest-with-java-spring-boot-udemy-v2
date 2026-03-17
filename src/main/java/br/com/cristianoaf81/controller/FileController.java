@@ -1,6 +1,8 @@
 package br.com.cristianoaf81.controller;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +42,12 @@ public class FileController implements FileControllerDocs {
   }
 
 	@Override
-	public List<UploadFileResponseDTO> uploadMultipleFiles(MultipartFile[] files) {
-    return null;
+  @PostMapping("/uploadMultipleFiles")
+	public List<UploadFileResponseDTO> uploadMultipleFiles(@RequestParam(name = "files") MultipartFile[] files) {
+    return Arrays.asList(files)
+    .stream()
+    .map(file -> uploadFile(file))
+    .collect(Collectors.toList());
   }
 
 	@Override
