@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.cristianoaf81.exception.BadRequestException;
 import br.com.cristianoaf81.exception.CustomExceptionResponse;
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
@@ -32,7 +33,7 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
   }
 
   @ExceptionHandler(UnsupportedMathOperationException.class)
-  public final ResponseEntity<CustomExceptionResponse> handleBadRequestExceptions(Exception ex, WebRequest request) {
+  public final ResponseEntity<CustomExceptionResponse> handleUnsupportedMathOperationsExceptions(Exception ex, WebRequest request) {
     LocalDateTime timestamp = LocalDateTime.now();
     String message = ex.getMessage();
     String details = request.getDescription(false);
@@ -84,4 +85,14 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     CustomExceptionResponse response = new CustomExceptionResponse(timestamp, message, details);
     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+  @ExceptionHandler(BadRequestException.class)
+  public final ResponseEntity<CustomExceptionResponse> handleBadRequestExceptions(Exception ex, WebRequest request) {
+    LocalDateTime timestamp = LocalDateTime.now();
+    String message = ex.getMessage();
+    String details = request.getDescription(false);
+    CustomExceptionResponse response = new CustomExceptionResponse(timestamp, message, details);
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
 }
