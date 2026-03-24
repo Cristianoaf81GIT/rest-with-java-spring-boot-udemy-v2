@@ -7,6 +7,6 @@ import br.com.cristianoaf81.dto.v1.PersonDTO;
 
 public interface FileImporter {
 
-  List<PersonDTO> importFile(InputStream st) throws Exception;
+  List<PersonDTO> importFile(InputStream is) throws Exception;
 
 }

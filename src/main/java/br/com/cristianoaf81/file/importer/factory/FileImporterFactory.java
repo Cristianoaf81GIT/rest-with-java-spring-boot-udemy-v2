@@ -9,7 +9,6 @@ import br.com.cristianoaf81.file.importer.contract.FileImporter;
 import br.com.cristianoaf81.file.importer.impl.CsvImporter;
 import br.com.cristianoaf81.file.importer.impl.XlsxImporter;
 
-import org.apache.commons.compress.utils.FileNameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +20,9 @@ public class FileImporterFactory {
   @Autowired
   private ApplicationContext context;
   
-  @SuppressWarnings("deprecated")
   public FileImporter getImporter(String fileName) {
+    String[] parts = fileName.split("\\.");
+    String fileExtension = parts[parts.length -1];
 
     if (fileName.endsWith(".xlsx")) {
       return context.getBean(XlsxImporter.class);
@@ -31,7 +31,8 @@ public class FileImporterFactory {
       return context.getBean(CsvImporter.class);
       //return new CsvImporter();
     } else {
-      throw new BadRequestException("Invalid file format: [" + FileNameUtils.getExtension(fileName) + "]"); 
+      logger.warn("Invalid file format!");
+      throw new BadRequestException("Invalid file format: [" + fileExtension + "]"); 
     }
 
   }

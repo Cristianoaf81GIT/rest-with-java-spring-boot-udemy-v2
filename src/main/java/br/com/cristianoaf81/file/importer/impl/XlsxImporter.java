@@ -9,7 +9,7 @@ import br.com.cristianoaf81.file.importer.contract.FileImporter;
 public class XlsxImporter implements FileImporter {
 
   @Override
-  public List<PersonDTO> importFile(InputStream st) throws Exception {
+  public List<PersonDTO> importFile(InputStream is) throws Exception {
     // TODO Auto-generated method stub
     return null;
   }
