@@ -19,6 +19,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.hateoas.Link;
 //import org.springframework.data.web.PagedResourcesAssembler;
 //import org.springframework.hateoas.PagedModel;
+import org.springframework.data.domain.Page;
 
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
@@ -77,17 +78,7 @@ public class PersonService {
     logger.info("Finding all people");
 
     var people = repository.findAll(pageable);
-    var peopleWithLinks = people.map(person -> {
-    var dto = parseObject(person, PersonDTO.class);
-      addHateosLinks(dto);
-      return dto;
-    });
-
-    Link findAllLink = WebMvcLinkBuilder
-    .linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
-      .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
-
-    return assembler.toModel(peopleWithLinks, findAllLink);
+    return buildPagedModel(pageable, people);  
   }
   
   @Transactional
@@ -95,17 +86,7 @@ public class PersonService {
     logger.info("Finding by name");
 
     var people = repository.findPeopleByName(firstName,pageable);
-    var peopleWithLinks = people.map(person -> {
-    var dto = parseObject(person, PersonDTO.class);
-      addHateosLinks(dto);
-      return dto;
-    });
-
-    Link findAllLink = WebMvcLinkBuilder
-    .linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
-      .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
-
-    return assembler.toModel(peopleWithLinks, findAllLink);
+    return buildPagedModel(pageable, people);  
   }
 
   private Person mockPerson(int i) {
@@ -197,6 +178,12 @@ public class PersonService {
 
     dto.add(
       linkTo(
+        methodOn(PersonController.class).findByName("",1,12,"asc")
+      ).withRel("findByName").withType("GET"));
+
+
+    dto.add(
+      linkTo(
         methodOn(PersonController.class).findAll(1,12, "asc")
       ).withRel("findAll").withType("GET"));
 
@@ -221,5 +208,20 @@ public class PersonService {
         methodOn(PersonController.class).disablePerson(dto.getId())
       ).withRel("disable").withType("PATCH")
     );
+  }
+
+  private PagedModel<EntityModel<PersonDTO>> buildPagedModel(Pageable pageable, Page<Person> people) {
+
+    var peopleWithLinks = people.map(p -> {
+      var dto = parseObject(p, PersonDTO.class);
+      addHateosLinks(dto);
+      return dto;
+    });
+    
+    Link findAllLink = WebMvcLinkBuilder
+    .linkTo(WebMvcLinkBuilder.methodOn(PersonController.class)
+      .findAll(pageable.getPageNumber(), pageable.getPageSize(), String.valueOf(pageable.getSort()))).withSelfRel();
+
+    return assembler.toModel(peopleWithLinks,findAllLink);
   }
 }
