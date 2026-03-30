@@ -1,28 +1,36 @@
 package br.com.cristianoaf81.services.person;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-//import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.hateoas.Link;
-//import org.springframework.data.web.PagedResourcesAssembler;
-//import org.springframework.hateoas.PagedModel;
 import org.springframework.data.domain.Page;
 
+import br.com.cristianoaf81.exception.BadRequestException;
+import br.com.cristianoaf81.exception.FileStorageException;
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
+import br.com.cristianoaf81.file.importer.contract.FileImporter;
+import br.com.cristianoaf81.file.importer.factory.FileImporterFactory;
 import br.com.cristianoaf81.mapper.custom.PersonMapper;
 
 import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
@@ -38,7 +46,7 @@ public class PersonService {
     
   private AtomicLong counter = new AtomicLong();
 
-  private Logger logger = Logger.getLogger(PersonService.class.getName());
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   private PersonRepository repository;
@@ -48,6 +56,10 @@ public class PersonService {
 
   @Autowired
   private PagedResourcesAssembler<PersonDTO> assembler;
+
+  @Autowired
+  private FileImporterFactory fileImporterFactory;
+
 
   List<PersonDTO> persons = new ArrayList<PersonDTO>();  
 
@@ -224,4 +236,36 @@ public class PersonService {
 
     return assembler.toModel(peopleWithLinks,findAllLink);
   }
+
+  public List<PersonDTO> massCreation(MultipartFile file) throws IOException {
+    logger.info("Importing people from file!");
+
+    if (file.isEmpty()) throw new BadRequestException("Please set a valid file!");
+
+    try(InputStream is = file.getInputStream()) {
+      String fileName = Optional.ofNullable(file.getOriginalFilename())
+      .orElseThrow(() -> new BadRequestException("File name cannot be null"));
+
+      FileImporter importer = this.fileImporterFactory.getImporter(fileName);
+      List<Person> entities = importer.importFile(is)
+        .stream()
+        .map((PersonDTO dto) -> repository.save(parseObject(dto, Person.class)))
+        .collect(Collectors.toList());
+
+
+      var peopleWithLinks = entities.stream().map(p -> {
+        var dto = parseObject(p, PersonDTO.class);
+        addHateosLinks(dto);
+        return dto;
+      });
+      
+      return peopleWithLinks.toList();
+    } catch (Exception e) {
+      String message = String.format("Error while trying to import file [%s]", e);
+      logger.error(message);
+      throw new FileStorageException("Error processing file!");
+    }
+
+  }
+
 }
