@@ -2,6 +2,9 @@ package br.com.cristianoaf81.controller;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.PageRequest;
@@ -151,7 +155,7 @@ public class PersonController implements PersonApiDocInterface {
       MediaType.APPLICATION_XML_VALUE, 
       MediaType.APPLICATION_YAML_VALUE 
     }
-  )
+  )  
   @Override
   public ResponseEntity<PagedModel<EntityModel<PersonDTO>>> findByName(
     @PathVariable(name = "firstName") String firstName,
@@ -163,5 +167,10 @@ public class PersonController implements PersonApiDocInterface {
     Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
 
     return ResponseEntity.ok(personService.findByName(firstName, pageable)); 
+  }
+
+  @Override
+  public List<PersonDTO> massCreation(MultipartFile file) {
+    return service.massCreation(file);
   }
 }

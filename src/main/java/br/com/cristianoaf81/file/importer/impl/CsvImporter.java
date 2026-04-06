@@ -8,10 +8,12 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat.Builder;
+import org.springframework.stereotype.Component;
 
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.file.importer.contract.FileImporter;
 
+@Component
 public class CsvImporter implements FileImporter {
 
  @Override

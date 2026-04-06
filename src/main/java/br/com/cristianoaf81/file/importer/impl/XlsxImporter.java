@@ -7,12 +7,14 @@ import java.util.Iterator;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.file.importer.contract.FileImporter;
 
+@Component
 public class XlsxImporter implements FileImporter {
 
   @Override
