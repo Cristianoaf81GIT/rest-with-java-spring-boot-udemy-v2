@@ -168,9 +168,17 @@ public class PersonController implements PersonApiDocInterface {
 
     return ResponseEntity.ok(personService.findByName(firstName, pageable)); 
   }
-
+  
+  @PostMapping(
+    value="/massCreation",
+    produces = { 
+      MediaType.APPLICATION_JSON_VALUE, 
+      MediaType.APPLICATION_XML_VALUE, 
+      MediaType.APPLICATION_YAML_VALUE 
+    }
+  )
   @Override
-  public List<PersonDTO> massCreation(MultipartFile file) {
-    return service.massCreation(file);
+  public List<PersonDTO> massCreation(@RequestParam(name = "file") MultipartFile file) {
+    return personService.massCreation(file);
   }
 }

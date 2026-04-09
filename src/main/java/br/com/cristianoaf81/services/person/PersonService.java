@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -237,7 +237,7 @@ public class PersonService {
     return assembler.toModel(peopleWithLinks,findAllLink);
   }
 
-  public List<PersonDTO> massCreation(MultipartFile file) throws IOException {
+  public List<PersonDTO> massCreation(MultipartFile file) {
     logger.info("Importing people from file!");
 
     if (file.isEmpty()) throw new BadRequestException("Please set a valid file!");
