@@ -211,6 +211,12 @@ public class PersonService {
       ).withRel("create").withType("POST"));
 
     dto.add(
+        linkTo(methodOn(PersonController.class).massCreation(null))
+        .withRel("massCreation")
+        .withType("POST")
+    );
+
+    dto.add(
       linkTo(
         methodOn(PersonController.class).update(dto)
       ).withRel("update").withType("PUT"));
