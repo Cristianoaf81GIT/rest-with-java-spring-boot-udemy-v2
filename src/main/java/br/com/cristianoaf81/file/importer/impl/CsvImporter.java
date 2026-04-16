@@ -16,22 +16,21 @@ import br.com.cristianoaf81.file.importer.contract.FileImporter;
 @Component
 public class CsvImporter implements FileImporter {
 
- @Override
- public List<PersonDTO> importFile(InputStream is) throws Exception {
-  Builder csvBuilder = CSVFormat
-    .Builder
-    .create()
-    .setHeader()
-    .setSkipHeaderRecord(true)
-    .setIgnoreEmptyLines(true)
-    .setTrim(true);
+  @Override
+  public List<PersonDTO> importFile(InputStream is) throws Exception {
+    Builder csvBuilder = CSVFormat.Builder
+        .create()
+        .setHeader()
+        .setSkipHeaderRecord(true)
+        .setIgnoreEmptyLines(true)
+        .setTrim(true);
 
-  CSVFormat format = csvBuilder.get();
+    CSVFormat format = csvBuilder.get();
 
-  Iterable<CSVRecord> records = format.parse(new InputStreamReader(is));
+    Iterable<CSVRecord> records = format.parse(new InputStreamReader(is));
 
-  return parseRecordsToPersonDTO(records);
- }
+    return parseRecordsToPersonDTO(records);
+  }
 
   private List<PersonDTO> parseRecordsToPersonDTO(Iterable<CSVRecord> records) {
     List<PersonDTO> people = new ArrayList<>();
@@ -45,5 +44,5 @@ public class CsvImporter implements FileImporter {
       people.add(dto);
     }
     return people;
-  } 
+  }
 }
