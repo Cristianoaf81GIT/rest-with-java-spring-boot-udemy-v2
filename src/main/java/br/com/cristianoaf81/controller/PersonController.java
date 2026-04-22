@@ -31,8 +31,8 @@ import br.com.cristianoaf81.controller.docs.PersonApiDocInterface;
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 import br.com.cristianoaf81.services.person.PersonService;
+import jakarta.servlet.http.HttpServletRequest;
 
-//@CrossOrigin(origins = {"http://localhost:8080"})
 @RestController
 @RequestMapping("/api/person/v1")
 public class PersonController implements PersonApiDocInterface {
@@ -40,10 +40,6 @@ public class PersonController implements PersonApiDocInterface {
   @Autowired
   private PersonService personService;
 
-  // @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces =
-  // MediaType.APPLICATION_JSON_VALUE)
-  // @CrossOrigin(origins = {"http://localhost:8080"}) // permite o controle
-  // granular de cors na aplicação
   @GetMapping(value = "/{id}", produces = {
       MediaType.APPLICATION_JSON_VALUE,
       MediaType.APPLICATION_XML_VALUE,
@@ -54,22 +50,11 @@ public class PersonController implements PersonApiDocInterface {
     return personService.findById(id);
   }
 
-  // @RequestMapping(method = RequestMethod.GET, produces =
-  // MediaType.APPLICATION_JSON_VALUE)
   @GetMapping(produces = {
       MediaType.APPLICATION_JSON_VALUE,
       MediaType.APPLICATION_XML_VALUE,
       MediaType.APPLICATION_YAML_VALUE
-  }// ,
-  /*
-   * consumes = { ****IMPORTANT GET METHOD DOES NOT CONSUMES MEDIA TYPE COMMENT
-   * IT*********
-   * MediaType.APPLICATION_JSON_VALUE,
-   * MediaType.APPLICATION_XML_VALUE,
-   * MediaType.APPLICATION_YAML_VALUE
-   * }
-   */
-  )
+  })
   @Override
   public ResponseEntity<PagedModel<EntityModel<PersonDTO>>> findAll(
       @RequestParam(name = "page", defaultValue = "0") Integer page,
@@ -80,11 +65,6 @@ public class PersonController implements PersonApiDocInterface {
     return ResponseEntity.ok(personService.findAll(pageable));
   }
 
-  // @RequestMapping(method = RequestMethod.POST, produces =
-  // MediaType.APPLICATION_JSON_VALUE, consumes =
-  // MediaType.APPLICATION_JSON_VALUE)
-  // @CrossOrigin(origins = {"http://localhost:8080"}) // libera apenas um metodo
-  // especifico do controller, pode ser usado também no controler inteiro
   @PostMapping(produces = {
       MediaType.APPLICATION_JSON_VALUE,
       MediaType.APPLICATION_XML_VALUE,
@@ -108,9 +88,6 @@ public class PersonController implements PersonApiDocInterface {
     return personService.createV2(person);
   }
 
-  // @RequestMapping(method = RequestMethod.PUT, produces =
-  // MediaType.APPLICATION_JSON_VALUE, consumes =
-  // MediaType.APPLICATION_JSON_VALUE)
   @PutMapping(produces = {
       MediaType.APPLICATION_JSON_VALUE,
       MediaType.APPLICATION_XML_VALUE,
@@ -125,7 +102,6 @@ public class PersonController implements PersonApiDocInterface {
     return personService.update(person);
   }
 
-  // @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   @DeleteMapping(value = "/{id}")
   @Override
   public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
@@ -169,8 +145,14 @@ public class PersonController implements PersonApiDocInterface {
     return personService.massCreation(file);
   }
 
-  public Resource exportPage(int i, int j, String string, String applicationXlsxValue) {
-    // TODO Auto-generated method stub
+  public ResponseEntity<Resource> exportPage(
+      @RequestParam(name = "page", defaultValue = "0") Integer page,
+      @RequestParam(name = "size", defaultValue = "12") Integer size,
+      @RequestParam(name = "direction", defaultValue = "asc") String direction,
+      HttpServletRequest request) {
+    Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+
     return null;
   }
 }
