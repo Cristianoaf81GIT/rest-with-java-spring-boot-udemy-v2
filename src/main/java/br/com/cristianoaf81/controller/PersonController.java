@@ -1,12 +1,18 @@
 package br.com.cristianoaf81.controller;
 
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,24 +24,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.core.LinkBuilderSupport;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import br.com.cristianoaf81.controller.docs.PersonApiDocInterface;
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 import br.com.cristianoaf81.dto.v2.PersonDTOV2;
+import br.com.cristianoaf81.file.exporter.MediaTypes;
 import br.com.cristianoaf81.services.person.PersonService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/person/v1")
 public class PersonController implements PersonApiDocInterface {
+
+  public PersonService getPersonService() {
+    return personService;
+  }
 
   @Autowired
   private PersonService personService;
@@ -145,14 +148,29 @@ public class PersonController implements PersonApiDocInterface {
     return personService.massCreation(file);
   }
 
+  @GetMapping(value = "/exportPage", produces = {
+      MediaTypes.APPLICATION_CSV_VALUE,
+      MediaTypes.APPLICATION_XLSX_VALUE
+  })
+  @Override
   public ResponseEntity<Resource> exportPage(
       @RequestParam(name = "page", defaultValue = "0") Integer page,
       @RequestParam(name = "size", defaultValue = "12") Integer size,
       @RequestParam(name = "direction", defaultValue = "asc") String direction,
       HttpServletRequest request) {
+
     Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
     Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+    String acceptHeader = request.getHeader(HttpHeaders.ACCEPT);
+    Resource file = personService.exportPage(pageable, acceptHeader);
+    String contentType = acceptHeader != null ? acceptHeader : "application/octet-stream";
 
-    return null;
+    var fileExtension = MediaTypes.APPLICATION_XLSX_VALUE.equalsIgnoreCase(acceptHeader) ? ".xlsx" : ".csv";
+    var fileName = "people_exported" + fileExtension;
+
+    return ResponseEntity.ok()
+        .contentType(MediaType.parseMediaType(contentType))
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+        .body(file);
   }
 }

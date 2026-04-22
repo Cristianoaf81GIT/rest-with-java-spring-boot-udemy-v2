@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,52 +30,53 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api/file/v1")
 public class FileController implements FileControllerDocs {
 
-  private static final Logger logger = LoggerFactory.getLogger(FileController.class); 
+  private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
   @Autowired
   private FileStorageService service;
 
-	@Override
+  @Override
   @PostMapping("/uploadFile")
-	public UploadFileResponseDTO uploadFile(@RequestParam(name = "file") MultipartFile file) {
-	  String fileName = service.storeFile(file);
+  public UploadFileResponseDTO uploadFile(@RequestParam(name = "file") MultipartFile file) {
+    String fileName = service.storeFile(file);
     String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-    .path("/api/file/v1/downloadFile/")
-    .path(fileName)
-    .toUriString();
+        .path("/api/file/v1/downloadFile/")
+        .path(fileName)
+        .toUriString();
     return new UploadFileResponseDTO(fileName, fileDownloadUri, file.getContentType(), file.getSize());
   }
 
-	@Override
+  @Override
   @PostMapping("/uploadMultipleFiles")
-	public List<UploadFileResponseDTO> uploadMultipleFiles(@RequestParam(name = "files") MultipartFile[] files) {
+  public List<UploadFileResponseDTO> uploadMultipleFiles(@RequestParam(name = "files") MultipartFile[] files) {
     return Arrays.asList(files)
-    .stream()
-    .map(file -> uploadFile(file))
-    .collect(Collectors.toList());
+        .stream()
+        .map(file -> uploadFile(file))
+        .collect(Collectors.toList());
   }
 
-	@Override
+  @Override
   @GetMapping("/downloadFile/{fileName:.+}")
-  public ResponseEntity<Resource> downloadFile(@PathVariable(name = "fileName") String fileName, HttpServletRequest request) {
+  public ResponseEntity<Resource> downloadFile(@PathVariable(name = "fileName") String fileName,
+      HttpServletRequest request) {
     Resource resource = service.loadFileAsResource(fileName);
     String contentType = null;
-    
+
     try {
       contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
     } catch (Exception e) {
       logger.error("Could not determine file type!", e);
     }
-    
+
     if (contentType == null) {
       contentType = "application/octet-stream";
     }
-	  
+
     return ResponseEntity.ok()
-      .contentType(MediaType
-      .parseMediaType(contentType))
-      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-      .body(resource);
+        .contentType(MediaType
+            .parseMediaType(contentType))
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+        .body(resource);
   }
 
 }
