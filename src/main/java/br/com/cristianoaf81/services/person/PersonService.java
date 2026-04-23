@@ -1,49 +1,46 @@
 package br.com.cristianoaf81.services.person;
 
-import java.util.concurrent.atomic.AtomicLong;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.stream.Collectors;
+import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.hateoas.Link;
-import org.springframework.data.domain.Page;
-
+import br.com.cristianoaf81.controller.PersonController;
+import br.com.cristianoaf81.dto.v1.PersonDTO;
+import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 import br.com.cristianoaf81.exception.BadRequestException;
 import br.com.cristianoaf81.exception.FileStorageException;
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
-import br.com.cristianoaf81.file.exporter.MediaTypes;
 import br.com.cristianoaf81.file.exporter.contract.FileExporter;
 import br.com.cristianoaf81.file.exporter.factory.FileExporterFactory;
 import br.com.cristianoaf81.file.importer.contract.FileImporter;
 import br.com.cristianoaf81.file.importer.factory.FileImporterFactory;
 import br.com.cristianoaf81.mapper.custom.PersonMapper;
-
-import static br.com.cristianoaf81.mapper.ObjectMapper.parseObject;
 import br.com.cristianoaf81.model.Person;
 import br.com.cristianoaf81.repository.PersonRepository;
 import jakarta.transaction.Transactional;
-import br.com.cristianoaf81.controller.PersonController;
-import br.com.cristianoaf81.dto.v1.PersonDTO;
-import br.com.cristianoaf81.dto.v2.PersonDTOV2;
 
 @Service
 public class PersonService {
@@ -224,7 +221,7 @@ public class PersonService {
 
     dto.add(
         linkTo(
-            methodOn(PersonController.class).exportPage(1, 12, "asc", MediaTypes.APPLICATION_XLSX_VALUE))
+            methodOn(PersonController.class).exportPage(1, 12, "asc", null))
             .withRel("exportPage").withType("GET"));
 
   }
