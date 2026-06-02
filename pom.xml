@@ -20,7 +20,9 @@
     <h2database.version>2.4.240</h2database.version>
     <testcontainers.version>2.0.2</testcontainers.version>
     <apache.poi.version>5.5.1</apache.poi.version>
-    <commons-csv.version>1.14.1</commons-csv.version> 
+    <commons-csv.version>1.14.1</commons-csv.version>
+    <jasperreports.version>7.0.6</jasperreports.version>
+    <zxing.version>3.5.4</zxing.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -141,8 +143,48 @@
         <version>${apache.poi.version}</version>
         <scope>compile</scope>
     </dependency>
+ 
+    <!-- Source: https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+    <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+        <version>${jasperreports.version}</version>
+        <scope>compile</scope>
+    </dependency>
 
-    </dependencies>
+    <!-- Source: https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-fonts -->
+    <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-fonts</artifactId>
+      <version>${jasperreports.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <!-- Source: https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports-pdf -->
+    <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-pdf</artifactId>
+        <version>${jasperreports.version}</version>
+        <scope>compile</scope>
+    </dependency>
+    
+    <!-- Source: https://mvnrepository.com/artifact/com.google.zxing/core -->
+    <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>core</artifactId>
+      <version>${zxing.version}</version>
+        <scope>compile</scope>
+    </dependency>
+    
+    <!-- Source: https://mvnrepository.com/artifact/com.google.zxing/javase -->
+    <dependency>
+        <groupId>com.google.zxing</groupId>
+        <artifactId>javase</artifactId>
+      <version>${zxing.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+  </dependencies>
 
   <dependencyManagement>
       <dependencies>

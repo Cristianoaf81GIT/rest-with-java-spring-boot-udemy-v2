@@ -10,4 +10,6 @@ public interface FileExporter {
 
   Resource ExportFile(List<PersonDTO> people) throws Exception;
 
+  Resource ExportPerson(PersonDTO person) throws Exception;
+
 }

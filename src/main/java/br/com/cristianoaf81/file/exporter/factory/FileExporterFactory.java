@@ -11,6 +11,7 @@ import br.com.cristianoaf81.file.exporter.MediaTypes;
 import br.com.cristianoaf81.file.exporter.contract.FileExporter;
 import br.com.cristianoaf81.file.exporter.impl.CsvExporter;
 import br.com.cristianoaf81.file.exporter.impl.XlsxExporter;
+import br.com.cristianoaf81.file.exporter.impl.PdfExporter;
 
 @Component
 public class FileExporterFactory {
@@ -28,6 +29,8 @@ public class FileExporterFactory {
       return context.getBean(XlsxExporter.class);
     } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {
       return context.getBean(CsvExporter.class);
+    } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_PDF_VALUE)) {
+      return context.getBean(PdfExporter.class);
     } else {
       logger.warn("Invalid file format!");
       throw new BadRequestException("Invalid file format: [" + fileExtension + "]");
