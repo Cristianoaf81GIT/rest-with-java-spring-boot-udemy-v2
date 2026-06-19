@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import br.com.cristianoaf81.exception.BadRequestException;
 import br.com.cristianoaf81.file.exporter.MediaTypes;
-import br.com.cristianoaf81.file.exporter.contract.FileExporter;
+import br.com.cristianoaf81.file.exporter.contract.PersonExporter;
 import br.com.cristianoaf81.file.exporter.impl.CsvExporter;
 import br.com.cristianoaf81.file.exporter.impl.XlsxExporter;
 import br.com.cristianoaf81.file.exporter.impl.PdfExporter;
@@ -21,7 +21,7 @@ public class FileExporterFactory {
   @Autowired
   private ApplicationContext context;
 
-  public FileExporter getExporter(String acceptHeader) {
+  public PersonExporter getExporter(String acceptHeader) {
     String[] parts = acceptHeader.split("\\.");
     String fileExtension = parts[parts.length - 1];
 

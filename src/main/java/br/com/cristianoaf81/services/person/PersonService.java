@@ -33,7 +33,7 @@ import br.com.cristianoaf81.exception.BadRequestException;
 import br.com.cristianoaf81.exception.FileStorageException;
 import br.com.cristianoaf81.exception.RequiredObjectIsNullException;
 import br.com.cristianoaf81.exception.ResourceNotFoundException;
-import br.com.cristianoaf81.file.exporter.contract.FileExporter;
+import br.com.cristianoaf81.file.exporter.contract.PersonExporter;
 import br.com.cristianoaf81.file.exporter.factory.FileExporterFactory;
 import br.com.cristianoaf81.file.importer.contract.FileImporter;
 import br.com.cristianoaf81.file.importer.factory.FileImporterFactory;
@@ -281,10 +281,27 @@ public class PersonService {
         .getContent();
 
     try {
-      FileExporter exporter = fileExporter.getExporter(acceptHeader);
-      return exporter.ExportFile(people);
+      PersonExporter exporter = fileExporter.getExporter(acceptHeader);
+      return exporter.ExportPeople(people);
     } catch (Exception e) {
       throw new RuntimeException("Error during file export!", e);
+    }
+  }
+
+  public Resource exportPerson(Long id, String acceptHeader) {
+    logger.info("Exporting data of one person!");
+    String errMsg = String.format("No record found for this id: [%s]", id);
+    var person = parseObject(repository
+        .findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(errMsg)), PersonDTO.class);
+
+    person.setId(id);
+
+    try {
+      PersonExporter exporter = fileExporter.getExporter(acceptHeader);
+      return exporter.ExportPerson(person);
+    } catch (Exception e) {
+      throw new RuntimeException("Error during person data export.", e);
     }
   }
 

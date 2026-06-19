@@ -12,8 +12,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -33,22 +36,25 @@ import io.restassured.specification.RequestSpecification;
 
 
 @SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
   properties = {
-    "server.port=8888",
     "cors.originPatterns: http://localhost:8080,https://www.google.com.br,http://localhost:3000,http://www.google.com.br"
   }
 )
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
+@TestInstance(Lifecycle.PER_CLASS)
 public class PersonControllerXmlTest extends AbstractIntegrationTest {
   
+  @LocalServerPort
+  private int serverPort;
+
   private static RequestSpecification specification;
   private static XmlMapper objectMapper;
   private static PersonDTO person;
 
   @BeforeAll
-  static void setup() {
+  void setup() {
     objectMapper = new XmlMapper();
     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     person = new PersonDTO();
@@ -62,7 +68,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
     specification = new RequestSpecBuilder()
     .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
     .setBasePath("/api/person/v1")
-    .setPort(TestConfigs.SERVER_PORT)
+    .setPort(serverPort)
     .addFilter(new RequestLoggingFilter(LogDetail.ALL))
     .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
     .build();
@@ -139,7 +145,7 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
     specification = new RequestSpecBuilder()
     .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
     .setBasePath("/api/person/v1")
-    .setPort(TestConfigs.SERVER_PORT)
+    .setPort(serverPort)
     .addFilter(new RequestLoggingFilter(LogDetail.ALL))
     .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
     .build();

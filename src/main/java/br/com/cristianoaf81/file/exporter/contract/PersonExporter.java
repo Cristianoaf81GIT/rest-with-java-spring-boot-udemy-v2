@@ -6,9 +6,9 @@ import org.springframework.core.io.Resource;
 
 import br.com.cristianoaf81.dto.v1.PersonDTO;
 
-public interface FileExporter {
+public interface PersonExporter {
 
-  Resource ExportFile(List<PersonDTO> people) throws Exception;
+  Resource ExportPeople(List<PersonDTO> people) throws Exception;
 
   Resource ExportPerson(PersonDTO person) throws Exception;
 

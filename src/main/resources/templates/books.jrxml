@@ -8,16 +8,8 @@
 		</conditionalStyle>
 	</style>
 	<parameter name="PERSON_ID" class="java.lang.String"/>
-	<parameter name="SUB_REPORT_DATA_SOURCE" class="java.lang.String"/>
-	<query language="SQL"><![CDATA[SELECT id,
-	author,
-	launch_date AS launchDate,
-	price,
-	title
-FROM `rest-with-springboot-v2`.books b
-JOIN person_books pb ON pb.book_id = b.id
-WHERE pb.person_id = 50]]></query>
-	<field name="id" class="java.lang.Integer">
+	<parameter name="SUB_REPORT_DATA_SOURCE" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="id"/>
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="books"/>
@@ -27,12 +19,12 @@ WHERE pb.person_id = 50]]></query>
 		<property name="com.jaspersoft.studio.field.label" value="author"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="books"/>
 	</field>
-	<field name="launchDate" class="java.time.LocalDateTime">
+	<field name="launchDate" class="java.time.LocalDate">
 		<property name="com.jaspersoft.studio.field.name" value="launch_date"/>
 		<property name="com.jaspersoft.studio.field.label" value="launchDate"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="books"/>
 	</field>
-	<field name="price" class="java.math.BigDecimal">
+	<field name="price" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="price"/>
 		<property name="com.jaspersoft.studio.field.label" value="price"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="books"/>
@@ -67,7 +59,7 @@ WHERE pb.person_id = 50]]></query>
 	</columnHeader>
 	<detail>
 		<band height="38" splitType="Stretch">
-			<element kind="textField" uuid="b670268d-9085-42e0-8167-783ec1b3abb1" x="0" y="0" width="40" height="30" forecolor="#1C1B1B" hTextAlign="Center" vTextAlign="Middle" style="zebraStyle">
+			<element kind="textField" uuid="b670268d-9085-42e0-8167-783ec1b3abb1" x="0" y="0" width="40" height="30" forecolor="#1C1B1B" linkType="None" linkTarget="Self" hTextAlign="Center" vTextAlign="Middle" style="zebraStyle">
 				<expression><![CDATA[$F{id}]]></expression>
 				<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="96a46c6d-baee-4304-b7ed-3779004ea9f3"/>
 			</element>

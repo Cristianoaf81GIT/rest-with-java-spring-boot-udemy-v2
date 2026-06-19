@@ -12,13 +12,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import br.com.cristianoaf81.dto.v1.PersonDTO;
-import br.com.cristianoaf81.file.exporter.contract.FileExporter;
+import br.com.cristianoaf81.file.exporter.contract.PersonExporter;
 
 @Component
-public class CsvExporter implements FileExporter {
+public class CsvExporter implements PersonExporter {
 
   @Override
-  public Resource ExportFile(List<PersonDTO> people) throws Exception {
+  public Resource ExportPeople(List<PersonDTO> people) throws Exception {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 

@@ -195,4 +195,22 @@ public interface PersonApiDocInterface {
       @RequestParam(name = "size", defaultValue = "12") Integer size,
       @RequestParam(name = "direction", defaultValue = "asc") String direction,
       HttpServletRequest request);
+
+  @Operation(summary = "Export Person Data as PDF", description = "Export a specific Person Data as PDF by Your ID", tags = {
+      "People" }, responses = {
+          @ApiResponse(description = "Success", responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_PDF_VALUE)),
+
+          @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+
+          @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+
+          @ApiResponse(description = "Not found", responseCode = "404", content = @Content),
+
+          @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content),
+      })
+
+  public ResponseEntity<Resource> export(
+      Long id,
+      HttpServletRequest request);
+
 }

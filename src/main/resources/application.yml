@@ -5,30 +5,43 @@ cors:
 file:
   upload-dir: ${user.dir}/files
 
+email:
+  subject: ${EMAIL_SUBJECT}
+  message: ${EMAIL_MESSAGE}
+
 spring:
   application:
     name: rest-with-java-spring-boot-udemy-v2
-  
+
   config:
     import: ./env.properties
-  
+
   datasource:
-    driver-class-name: ${DRIVER_CLASS_NAME} 
+    driver-class-name: ${DRIVER_CLASS_NAME}
     url: ${URL_CONN}
     username: ${USERNAME}
     password: ${PASSWORD}
     hikari:
       maximum-pool-size: 30
       connection-timeout: 50000
-  
+
+  mail:
+    host: ${EMAIL_SMTP}
+    port: ${EMAIL_SMTP_PORT}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enabled: true
+      mail.smtp.starttls.required: true
   jpa:
     hibernate:
-      ddl-auto: ${DDL_OPTS}    
+      ddl-auto: ${DDL_OPTS}
       show-sql: ${HIBERNATE_SHOW_SQL}
-    
+
     # nao e filho de hibernate
     open-in-view: ${OPEN_IN_VIEW_OPTS}
-  
+
   # configuracoes de multpart para upload/download
   servlet:
     multipart:
