@@ -42,12 +42,12 @@ public class EmailSender implements Serializable {
     return this;
   }
 
-  public EmailSender setSubject(String subject) {
+  public EmailSender withSubject(String subject) {
     this.subject = subject;
     return this;
   }
 
-  public EmailSender withMessage(String body) {
+  public EmailSender withBodyMessage(String body) {
     this.body = body;
     return this;
   }
