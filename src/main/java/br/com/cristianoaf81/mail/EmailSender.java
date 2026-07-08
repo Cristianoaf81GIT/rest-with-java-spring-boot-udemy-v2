@@ -67,8 +67,8 @@ public class EmailSender implements Serializable {
       helper.setText(body, true);
       if (attachment != null) {
         helper.addAttachment(attachment.getName(), attachment);
-        mailSender.send(message);
       }
+      mailSender.send(message);
       logger.info("Email sent to %s with the subject '%s'%n", to, subject);
       reset();
     } catch (MessagingException me) {
