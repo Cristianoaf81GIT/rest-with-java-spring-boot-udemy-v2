@@ -23,6 +23,7 @@
     <commons-csv.version>1.14.1</commons-csv.version>
     <jasperreports.version>7.0.6</jasperreports.version>
     <zxing.version>3.5.4</zxing.version>
+    <java.jwt.version>4.6.0</java.jwt.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -114,6 +115,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    
+    <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers</artifactId>
         <version>${testcontainers.version}</version>
@@ -186,6 +192,14 @@
         <groupId>com.google.zxing</groupId>
         <artifactId>javase</artifactId>
       <version>${zxing.version}</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <!-- Source: https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+    <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+      <version>${java.jwt.version}</version>
         <scope>compile</scope>
     </dependency>
 
