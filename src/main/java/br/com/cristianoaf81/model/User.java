@@ -1,6 +1,8 @@
 package br.com.cristianoaf81.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -8,9 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,7 +30,7 @@ public class User implements UserDetails {
   private Long id;
 
   @Column(name = "user_name", unique = true)
-  private String username;
+  private String userName;
 
   @Column(name = "full_name")
   private String fullName;
@@ -44,37 +50,55 @@ public class User implements UserDetails {
   @Column
   private Boolean enabled;
 
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "user_permission", joinColumns = { @JoinColumn(name = "id_user") }, inverseJoinColumns = {
+      @JoinColumn(name = "id_permission") })
+  private List<Permission> permissions;
+
   public User() {
+  }
+
+  public List<String> getRoles() {
+    List<String> roles = new ArrayList<>();
+    for (Permission permission : permissions) {
+      roles.add(permission.getDescription());
+    }
+    return roles;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.permissions;
+  }
+
+  @Override
+  public String getPassword() {
+    return this.password;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.userName;
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    // TODO Auto-generated method stub
-    return UserDetails.super.isAccountNonExpired();
+    return this.accountNonExpired;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    // TODO Auto-generated method stub
-    return UserDetails.super.isAccountNonLocked();
+    return this.accountNonLocked;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    // TODO Auto-generated method stub
-    return UserDetails.super.isCredentialsNonExpired();
+    return this.credentialsNonExpired;
   }
 
   @Override
   public boolean isEnabled() {
-    // TODO Auto-generated method stub
-    return UserDetails.super.isEnabled();
+    return this.enabled;
   }
 
   public Long getId() {
@@ -85,12 +109,8 @@ public class User implements UserDetails {
     this.id = id;
   }
 
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
   public String getFullName() {
@@ -99,10 +119,6 @@ public class User implements UserDetails {
 
   public void setFullName(String fullName) {
     this.fullName = fullName;
-  }
-
-  public String getPassword() {
-    return password;
   }
 
   public void setPassword(String password) {
@@ -141,40 +157,30 @@ public class User implements UserDetails {
     this.enabled = enabled;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null || getClass() != obj.getClass())
-      return false;
+  public List<Permission> getPermissions() {
+    return permissions;
+  }
 
-    User u = (User) obj;
-    return Objects.equals(getId(), u.getId()) &&
-        Objects.equals(getUsername(), u.getUsername()) &&
-        Objects.equals(getFullName(), u.getFullName()) &&
-        Objects.equals(getAccountNonExpired(), u.getAccountNonExpired()) &&
-        Objects.equals(getAccountNonLocked(), u.getAccountNonLocked()) &&
-        Objects.equals(getCredentialsNonExpired(), u.getCredentialsNonExpired());
+  public void setPermissions(List<Permission> permissions) {
+    this.permissions = permissions;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass())
+      return false;
+    User user = (User) o;
+    return Objects.equals(getId(), user.getId()) && Objects.equals(getUsername(), user.getUsername())
+        && Objects.equals(getFullName(), user.getFullName()) && Objects.equals(getPassword(), user.getPassword())
+        && Objects.equals(isAccountNonExpired(), user.isAccountNonExpired())
+        && Objects.equals(isAccountNonLocked(), user.isAccountNonLocked())
+        && Objects.equals(isCredentialsNonExpired(), user.isCredentialsNonExpired())
+        && Objects.equals(isEnabled(), user.isEnabled()) && Objects.equals(getPermissions(), user.getPermissions());
   }
 
   @Override
   public int hashCode() {
-    return Objects
-        .hash(
-            getId(),
-            getUsername(),
-            getFullName(),
-            getAccountNonExpired(),
-            getAccountNonLocked(),
-            getCredentialsNonExpired());
-  }
-
-  @Override
-  public String toString() {
-    return "User [id=" + id + ", username=" + username + ", fullName=" +
-        fullName + ", accountNonExpired=" + accountNonExpired +
-        ", accountNonLocked=" + accountNonLocked +
-        ", credentialsNonExpired=" + credentialsNonExpired + ", enabled=" +
-        enabled + "]";
+    return Objects.hash(getId(), getUsername(), getFullName(), getPassword(), isAccountNonExpired(),
+        isAccountNonLocked(), isCredentialsNonExpired(), isEnabled(), getPermissions());
   }
 }
