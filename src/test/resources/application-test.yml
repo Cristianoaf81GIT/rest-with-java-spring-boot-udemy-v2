@@ -12,6 +12,12 @@ email:
 server:
   port: 0
 
+security:
+  jwt:
+    token:
+      secret-key: ${SECRET_KEY}
+      expire-lenght: ${TOKEN_EXPIRATION}
+
 spring:
   application:
     name: rest-with-java-spring-boot-udemy-v2

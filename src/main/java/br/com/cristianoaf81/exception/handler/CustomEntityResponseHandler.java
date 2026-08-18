@@ -18,11 +18,12 @@ import br.com.cristianoaf81.exception.ResourceNotFoundException;
 import br.com.cristianoaf81.exception.UnsupportedMathOperationException;
 import br.com.cristianoaf81.exception.DivisionByZeroException;
 import br.com.cristianoaf81.exception.FileStorageException;
+import br.com.cristianoaf81.exception.InvalidJWTAuthenticationException;
 
 @RestController
 @ControllerAdvice
 public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler {
-  
+
   @ExceptionHandler(Exception.class)
   public final ResponseEntity<CustomExceptionResponse> handleAllExceptions(Exception ex, WebRequest request) {
     LocalDateTime timestamp = LocalDateTime.now();
@@ -33,7 +34,8 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
   }
 
   @ExceptionHandler(UnsupportedMathOperationException.class)
-  public final ResponseEntity<CustomExceptionResponse> handleUnsupportedMathOperationsExceptions(Exception ex, WebRequest request) {
+  public final ResponseEntity<CustomExceptionResponse> handleUnsupportedMathOperationsExceptions(Exception ex,
+      WebRequest request) {
     LocalDateTime timestamp = LocalDateTime.now();
     String message = ex.getMessage();
     String details = request.getDescription(false);
@@ -60,7 +62,8 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
   }
 
   @ExceptionHandler(RequiredObjectIsNullException.class)
-  public final ResponseEntity<CustomExceptionResponse> handleRequiredObjectIsNullException(Exception ex, WebRequest request) {
+  public final ResponseEntity<CustomExceptionResponse> handleRequiredObjectIsNullException(Exception ex,
+      WebRequest request) {
     LocalDateTime timestamp = LocalDateTime.now();
     String message = ex.getMessage();
     String details = request.getDescription(false);
@@ -95,4 +98,13 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(InvalidJWTAuthenticationException.class)
+  public final ResponseEntity<CustomExceptionResponse> handleInvalidJwtAuthenticationException(Exception ex,
+      WebRequest request) {
+    LocalDateTime timestamp = LocalDateTime.now();
+    String message = ex.getMessage();
+    String details = request.getDescription(false);
+    CustomExceptionResponse response = new CustomExceptionResponse(timestamp, message, details);
+    return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+  }
 }
