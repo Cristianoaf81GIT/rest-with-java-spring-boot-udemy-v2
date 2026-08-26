@@ -5,8 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import org.springframework.stereotype.Service;
+
 import br.com.cristianoaf81.repository.UserRepository;
 
+@Service
 public class UserService implements UserDetailsService {
 
   // injeção via propriedade é mais flexível, mas com mais chaces de null pointer
