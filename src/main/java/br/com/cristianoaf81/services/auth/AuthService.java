@@ -26,17 +26,17 @@ public class AuthService {
 
   public ResponseEntity<TokenDTO> signIn(AccountCredentialsDTO credentials) {
     authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword())
+        new UsernamePasswordAuthenticationToken(credentials.getUserName(), credentials.getPassword())
 
     );
 
-    var user = userRepository.findByUserName(credentials.getUsername());
+    var user = userRepository.findByUserName(credentials.getUserName());
 
     if (user == null) {
-      throw new UsernameNotFoundException("Username [" + credentials.getUsername() + "] not found.");
+      throw new UsernameNotFoundException("Username [" + credentials.getUserName() + "] not found.");
     }
 
-    var token = jwtTokenProvider.createAccessToken(credentials.getUsername(), user.getRoles());
+    var token = jwtTokenProvider.createAccessToken(credentials.getUserName(), user.getRoles());
 
     return ResponseEntity.ok(token);
   }
