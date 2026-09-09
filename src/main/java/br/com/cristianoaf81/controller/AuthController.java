@@ -5,8 +5,11 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +49,19 @@ public class AuthController {
     return ResponseEntity.ok(token);
   }
 
+  @Operation(summary = "Returns a token from refreshToken of authenticated user")
+  @PutMapping("/refresh/{userName}")
+  public ResponseEntity<?> signInWithRefreshToken(
+      @PathVariable("userName") String userName,
+      @RequestHeader("Authorization") String refreshToken) {
+
+    if (isRefreshParametersInValid(userName, refreshToken)) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid userName or refreshToken.");
+    }
+
+    return service.refreshToken(userName, refreshToken);
+  }
+
   private static boolean credentialsInvalid(AccountCredentialsDTO credentials) {
     if (credentials == null ||
         StringUtils.isBlank(credentials.getPassword()) ||
@@ -53,5 +69,9 @@ public class AuthController {
       return true;
     }
     return false;
+  }
+
+  private static boolean isRefreshParametersInValid(String userName, String refreshToken) {
+    return StringUtils.isBlank(userName) || StringUtils.isBlank(refreshToken);
   }
 }

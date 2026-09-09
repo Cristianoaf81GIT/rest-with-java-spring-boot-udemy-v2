@@ -41,4 +41,15 @@ public class AuthService {
     return ResponseEntity.ok(token);
   }
 
+  public ResponseEntity<TokenDTO> refreshToken(String userName, String refreshToken) {
+    TokenDTO token = null;
+    var user = userRepository.findByUserName(userName);
+    if (user == null) {
+      throw new UsernameNotFoundException("UserName " + user + " not found!");
+    }
+
+    token = jwtTokenProvider.refreshToken(refreshToken);
+    return ResponseEntity.ok(token);
+  }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import br.com.cristianoaf81.dto.security.TokenDTO;
@@ -50,6 +51,26 @@ public class JwtTokenProvider {
     String accessToken = getAccessToken(username, roles, now, validity);
     String refreshToken = getRefreshToken(username, roles, now);
     return new TokenDTO(username, true, now, validity, accessToken, refreshToken);
+  }
+
+  public TokenDTO refreshToken(String refreshToken) {
+    String userRefreshToken = "";
+
+    if (!isCurrentTokenTokenValid(refreshToken)) {
+      throw new JWTVerificationException("Invalid refreshToken.");
+    }
+
+    userRefreshToken = refreshToken.substring("Bearer ".length());
+
+    JWTVerifier verifier = JWT.require(algorithm).build();
+    DecodedJWT decodedJWT = verifier.verify(userRefreshToken);
+    String username = decodedJWT.getSubject();
+    List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+    return createAccessToken(username, roles);
+  }
+
+  private boolean isCurrentTokenTokenValid(String refreshToken) {
+    return StringUtils.isNotBlank(refreshToken) && refreshToken.startsWith("Bearer ");
   }
 
   private String getAccessToken(String username, List<String> roles, Date now, Date validity) {
@@ -91,14 +112,10 @@ public class JwtTokenProvider {
   }
 
   public String resolveToken(HttpServletRequest request) {
-    String beareToken = request.getHeader("Authorization");
-    if (StringUtils.isNotBlank(beareToken) && beareToken.startsWith("Bearer ")) {
-      return beareToken.substring("Bearer ".length());
+    String bearerToken = request.getHeader("Authorization");
+    if (isCurrentTokenTokenValid(bearerToken)) {
+      return bearerToken.substring("Bearer ".length());
     }
-    // else {
-    // throw new InvalidJWTAuthenticationException("Ivalid Jwt Token.");
-    // }
-    //
     return null;
   }
 
