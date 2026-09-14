@@ -59,7 +59,8 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid userName or refreshToken.");
     }
 
-    return service.refreshToken(userName, refreshToken);
+    var token = service.refreshToken(userName, refreshToken);
+    return ResponseEntity.ok(token);
   }
 
   private static boolean credentialsInvalid(AccountCredentialsDTO credentials) {
