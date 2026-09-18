@@ -11,7 +11,23 @@ public class AccountCredentialsDTO implements Serializable {
 
   private String password;
 
+  private String fullName;
+
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
+
+  public String getFullName() {
+    return fullName;
+  }
+
   public AccountCredentialsDTO() {
+  }
+
+  public AccountCredentialsDTO(String userName, String password, String fullName) {
+    this.userName = userName;
+    this.password = password;
+    this.fullName = fullName;
   }
 
   public static long getSerialversionuid() {
@@ -47,19 +63,21 @@ public class AccountCredentialsDTO implements Serializable {
     AccountCredentialsDTO dto = (AccountCredentialsDTO) obj;
 
     return Objects.equals(userName, dto.getUserName()) &&
-        Objects.equals(password, dto.getPassword());
+        Objects.equals(password, dto.getPassword()) &&
+        Objects.equals(fullName, dto.getFullName());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userName, password);
+    return Objects.hash(userName, password, fullName);
   }
 
   @Override
   public String toString() {
     return "AccountCredentialsDTO ["
         + "userName=" + userName
-        + ", password=" + password + "]";
+        + ", password=" + password
+        + ", fullName=" + fullName + "]";
   }
 
 }

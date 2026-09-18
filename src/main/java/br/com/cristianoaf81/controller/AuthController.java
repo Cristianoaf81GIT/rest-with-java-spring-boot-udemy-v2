@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,6 +62,20 @@ public class AuthController {
 
     var token = service.refreshToken(userName, refreshToken);
     return ResponseEntity.ok(token);
+  }
+
+  @Operation(summary = "Creates a new User")
+  @PostMapping(value = "/createUser", produces = {
+      MediaType.APPLICATION_JSON_VALUE,
+      MediaType.APPLICATION_XML_VALUE,
+      MediaType.APPLICATION_YAML_VALUE
+  }, consumes = {
+      MediaType.APPLICATION_JSON_VALUE,
+      MediaType.APPLICATION_YAML_VALUE,
+      MediaType.APPLICATION_XML_VALUE
+  })
+  public AccountCredentialsDTO create(@RequestBody AccountCredentialsDTO dto) {
+    return service.create(dto);
   }
 
   private static boolean credentialsInvalid(AccountCredentialsDTO credentials) {
