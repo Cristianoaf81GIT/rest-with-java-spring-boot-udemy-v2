@@ -3,6 +3,9 @@ package br.com.cristianoaf81.dto.security;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class AccountCredentialsDTO implements Serializable {
 
   private static final long serialVersionUID = 8501218071697588261L;
