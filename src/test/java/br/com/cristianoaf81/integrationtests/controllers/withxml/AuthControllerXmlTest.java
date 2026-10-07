@@ -1,4 +1,4 @@
-package br.com.cristianoaf81.integrationtests.controllers.withjson;
+package br.com.cristianoaf81.integrationtests.controllers.withxml;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,6 +15,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import br.com.cristianoaf81.config.TestConfigs;
 import br.com.cristianoaf81.dto.security.AccountCredentialsDTO;
 import br.com.cristianoaf81.dto.security.TokenDTO;
@@ -24,29 +28,33 @@ import br.com.cristianoaf81.integrationtests.testcontainers.AbstractIntegrationT
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 @TestInstance(Lifecycle.PER_CLASS)
-public class AuthControllerJsonTest extends AbstractIntegrationTest {
+public class AuthControllerXmlTest extends AbstractIntegrationTest {
 
   @LocalServerPort
   private int serverPort;
 
   private static AccountCredentialsDTO credentials;
   private static TokenDTO token;
+  private static XmlMapper objectMapper;
 
   @BeforeAll
   void setup() {
+    objectMapper = new XmlMapper();
+    objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     credentials = new AccountCredentialsDTO();
     token = new TokenDTO();
   }
 
   @Test
   @Order(1)
-  void signIn() {
+  void signIn() throws JsonProcessingException {
     credentials.setUserName("leandro");
     credentials.setPassword("admin123");
-    token = given()
+    var content = given()
         .basePath("/auth/signin")
         .port(serverPort)
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_XML_VALUE)
+        .accept(MediaType.APPLICATION_XML_VALUE)
         .body(credentials)
         .when()
         .post()
@@ -54,20 +62,22 @@ public class AuthControllerJsonTest extends AbstractIntegrationTest {
         .statusCode(200)
         .extract()
         .body()
-        .as(TokenDTO.class);
+        .asString();
 
+    token = objectMapper.readValue(content, TokenDTO.class);
     assertNotNull(token.getAccessToken());
     assertNotNull(token.getRefreshToken());
   }
 
   @Test
   @Order(2)
-  void signInWithRefreshToken() {
+  void signInWithRefreshToken() throws JsonProcessingException {
 
-    token = given()
+    var content = given()
         .basePath("/auth/refresh")
         .port(serverPort)
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_XML_VALUE)
+        .accept(MediaType.APPLICATION_XML_VALUE)
         .pathParam("userName", token.getUsername())
         .header(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + token.getRefreshToken())
         .when()
@@ -76,8 +86,8 @@ public class AuthControllerJsonTest extends AbstractIntegrationTest {
         .statusCode(200)
         .extract()
         .body()
-        .as(TokenDTO.class);
-
+        .asString();
+    token = objectMapper.readValue(content, TokenDTO.class);
     assertNotNull(token.getAccessToken());
     assertNotNull(token.getRefreshToken());
   }
