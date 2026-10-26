@@ -23,6 +23,8 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import br.com.cristianoaf81.config.TestConfigs;
+import br.com.cristianoaf81.dto.security.AccountCredentialsDTO;
+import br.com.cristianoaf81.dto.security.TokenDTO;
 import br.com.cristianoaf81.integrationtests.controllers.withyaml.mapper.YamlMapper;
 import br.com.cristianoaf81.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.cristianoaf81.unittests.dto.PersonDTO;
@@ -30,6 +32,7 @@ import br.com.cristianoaf81.unittests.dto.wrapper.xml.PagedModelPerson;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -54,11 +57,56 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
   private static RequestSpecification specification;
   private static YamlMapper objectMapper;
   private static PersonDTO person;
+  private static AccountCredentialsDTO credentials;
+  private static TokenDTO token;
 
   @BeforeAll
   void setup() {
     objectMapper = new YamlMapper();
     person = new PersonDTO();
+    credentials = new AccountCredentialsDTO();
+    token = new TokenDTO();
+  }
+
+  @Test
+  @Order(0)
+  void signIn() throws JsonProcessingException {
+    credentials.setUserName("leandro");
+    credentials.setPassword("admin123");
+    var accessToken = given()
+        .config(
+            RestAssuredConfig
+                .config()
+                .encoderConfig(
+                    EncoderConfig
+                        .encoderConfig()
+                        .encodeContentTypeAs(MediaType.APPLICATION_YAML_VALUE, ContentType.TEXT)))
+        .basePath("/auth/signin")
+        .port(serverPort)
+        .contentType(MediaType.APPLICATION_YAML_VALUE)
+        .accept(MediaType.APPLICATION_YAML_VALUE)
+        .body(credentials, objectMapper)
+        .when()
+        .post()
+        .then()
+        .statusCode(200)
+        .extract()
+        .body()
+        .as(TokenDTO.class, objectMapper);
+
+    token = accessToken;
+
+    specification = new RequestSpecBuilder()
+        .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
+        .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + token.getAccessToken())
+        .setBasePath("/api/person/v1")
+        .setPort(serverPort)
+        .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+        .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+        .build();
+
+    assertNotNull(token.getAccessToken());
+    assertNotNull(token.getRefreshToken());
   }
 
   @Test
@@ -66,13 +114,6 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
   void create() throws JsonProcessingException {
     mockPerson();
     person.setLastName("Benedict Torvalds");
-    specification = new RequestSpecBuilder()
-    .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
-    .setBasePath("/api/person/v1")
-    .setPort(serverPort)
-    .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-    .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-    .build();
 
     var createdPerson = given().config(
       RestAssured.config()
@@ -155,13 +196,6 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
   @Order(3)
   void update() throws JsonProcessingException {
     mockPerson();
-    specification = new RequestSpecBuilder()
-    .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
-    .setBasePath("/api/person/v1")
-    .setPort(serverPort)
-    .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-    .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-    .build();
 
     var createdPerson = given().config(
       RestAssured.config()

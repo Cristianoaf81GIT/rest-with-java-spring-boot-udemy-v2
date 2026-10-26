@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.cristianoaf81.config.TestConfigs;
+import br.com.cristianoaf81.dto.security.AccountCredentialsDTO;
+import br.com.cristianoaf81.dto.security.TokenDTO;
 import br.com.cristianoaf81.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.cristianoaf81.unittests.dto.PersonDTO;
 import br.com.cristianoaf81.unittests.dto.wrapper.json.WrapperPersonDTO;
@@ -49,11 +51,49 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   private static ObjectMapper objectMapper;
   private static PersonDTO person;
 
+  private static AccountCredentialsDTO credentials;
+  private static TokenDTO token;
+
   @BeforeAll
   void setup() {
     objectMapper = new ObjectMapper();
     objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     person = new PersonDTO();
+    credentials = new AccountCredentialsDTO();
+    token = new TokenDTO();
+  }
+
+  @Test
+  @Order(0)
+  void signIn() {
+    credentials.setUserName("leandro");
+    credentials.setPassword("admin123");
+    var accessToken = given()
+        .basePath("/auth/signin")
+        .port(serverPort)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body(credentials)
+        .when()
+        .post()
+        .then()
+        .statusCode(200)
+        .extract()
+        .body()
+        .as(TokenDTO.class);
+
+    token = accessToken;
+
+    specification = new RequestSpecBuilder()
+        .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
+        .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + token.getAccessToken())
+        .setBasePath("/api/person/v1")
+        .setPort(serverPort)
+        .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+        .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+        .build();
+
+    assertNotNull(token.getAccessToken());
+    assertNotNull(token.getRefreshToken());
   }
 
   @Test
@@ -61,13 +101,6 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   void create() throws JsonProcessingException {
     mockPerson();
     person.setLastName("Benedict Torvalds");
-    specification = new RequestSpecBuilder()
-        .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
-        .setBasePath("/api/person/v1")
-        .setPort(serverPort)
-        .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-        .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-        .build();
 
     var content = given(specification)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -101,14 +134,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   @Test
   @Order(2)
   void findById() throws JsonProcessingException {
-    // mockPerson();
-    // specification = new RequestSpecBuilder()
-    // .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
-    // .setBasePath("/api/person/v1")
-    // .setPort(TestConfigs.SERVER_PORT)
-    // .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-    // .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-    // .build();
+
 
     var content = given(specification)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -144,13 +170,6 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
   @Order(3)
   void update() throws JsonProcessingException {
     mockPerson();
-    specification = new RequestSpecBuilder()
-        .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_GOOGLE)
-        .setBasePath("/api/person/v1")
-        .setPort(serverPort)
-        .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-        .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-        .build();
 
     var content = given(specification)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
