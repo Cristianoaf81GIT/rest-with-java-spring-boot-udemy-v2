@@ -3,7 +3,8 @@ cors:
   originPatterns: http://localhost:8080,http://www.google.com.br,https://google.com.br,http://localhost:3000
 
 file:
-  upload-dir: ../../../files/
+  #upload-dir: ../../../files/
+  upload-dir: /home/runner/work/rest-with-java-spring-boot-udemy-v2/files
 
 email:
   subject: ${EMAIL_SUBJECT}

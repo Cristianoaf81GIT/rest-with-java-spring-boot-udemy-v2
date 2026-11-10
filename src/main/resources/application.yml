@@ -7,6 +7,7 @@ cors:
 
 file:
   upload-dir: ${user.dir}/files
+  #upload-dir: /home/runner/work/rest-with-java-spring-boot-udemy-v2/files
 
 email:
   subject: ${EMAIL_SUBJECT}

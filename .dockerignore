@@ -1,0 +1,22 @@
+target/
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+*.iml
+
+# artefatos e dados locais
+data/
+files/
+bfg-1.15.0.jar
+win32yank-x64.zip
+HELP.md
+http/
+mvnw.cmd
